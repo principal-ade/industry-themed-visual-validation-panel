@@ -96,6 +96,7 @@ bun run build-storybook
 ```
 
 Storybook will open at `http://localhost:6006` with:
+
 - Interactive component documentation
 - Multiple panel states and examples
 - Live prop editing
@@ -170,18 +171,18 @@ Access repository data and state:
 const { context } = props;
 
 // Repository information
-context.repositoryPath        // Current repository path
-context.repository            // Repository metadata
+context.repositoryPath; // Current repository path
+context.repository; // Repository metadata
 
 // Data slices
-context.gitStatus             // Git status information
-context.fileTree              // File tree structure
-context.markdownFiles         // Markdown files list
+context.gitStatus; // Git status information
+context.fileTree; // File tree structure
+context.markdownFiles; // Markdown files list
 
 // State management
-context.loading               // Loading state
-context.refresh()             // Refresh data
-context.hasSlice('git')       // Check slice availability
+context.loading; // Loading state
+context.refresh(); // Refresh data
+context.hasSlice('git'); // Check slice availability
 ```
 
 ### Actions
@@ -233,13 +234,13 @@ Each panel must be defined with metadata:
 
 ```typescript
 interface PanelDefinition {
-  id: string;              // Unique ID (e.g., 'org.panel-name')
-  name: string;            // Display name
-  icon?: string;           // Icon (emoji or URL)
-  version?: string;        // Version (defaults to package.json)
-  author?: string;         // Author (defaults to package.json)
-  description?: string;    // Short description
-  component: React.FC;     // The panel component
+  id: string; // Unique ID (e.g., 'org.panel-name')
+  name: string; // Display name
+  icon?: string; // Icon (emoji or URL)
+  version?: string; // Version (defaults to package.json)
+  author?: string; // Author (defaults to package.json)
+  description?: string; // Short description
+  component: React.FC; // The panel component
 
   // Optional lifecycle hooks
   onMount?: (context) => void | Promise<void>;
@@ -298,6 +299,7 @@ export const onPackageUnload = async () => {
 ### Build Configuration
 
 The build process (via Vite) automatically:
+
 - Externalizes React and ReactDOM (provided by host)
 - Bundles all other dependencies
 - Generates TypeScript declarations
@@ -346,8 +348,8 @@ The host application will automatically discover your panel by the `panel-extens
 Use reverse domain notation for panel IDs:
 
 ```typescript
-id: 'com.company.feature-panel'  // ✅ Good
-id: 'my-panel'                   // ❌ Bad (collision risk)
+id: 'com.company.feature-panel'; // ✅ Good
+id: 'my-panel'; // ❌ Bad (collision risk)
 ```
 
 ### 2. Error Handling
@@ -414,13 +416,13 @@ const MyPanel: React.FC<PanelComponentProps> = ({ context }) => {
 
 Panels can access these data slices from the host:
 
-| Slice | Type | Description |
-|-------|------|-------------|
-| `git` | `GitStatus` | Git repository status |
+| Slice      | Type             | Description                  |
+| ---------- | ---------------- | ---------------------------- |
+| `git`      | `GitStatus`      | Git repository status        |
 | `markdown` | `MarkdownFile[]` | Markdown files in repository |
-| `fileTree` | `FileTree` | File system tree structure |
-| `packages` | `PackageLayer[]` | Package dependencies |
-| `quality` | `QualityMetrics` | Code quality metrics |
+| `fileTree` | `FileTree`       | File system tree structure   |
+| `packages` | `PackageLayer[]` | Package dependencies         |
+| `quality`  | `QualityMetrics` | Code quality metrics         |
 
 Check availability before use:
 
@@ -434,17 +436,17 @@ if (context.hasSlice('git') && !context.isSliceLoading('git')) {
 
 Standard panel events:
 
-| Event | Description | Payload |
-|-------|-------------|---------|
-| `file:opened` | File was opened | `{ filePath: string }` |
-| `file:saved` | File was saved | `{ filePath: string }` |
-| `file:deleted` | File was deleted | `{ filePath: string }` |
-| `git:status-changed` | Git status changed | `GitStatus` |
-| `git:commit` | Git commit made | `{ hash: string }` |
-| `git:branch-changed` | Branch changed | `{ branch: string }` |
-| `panel:focus` | Panel gained focus | `{ panelId: string }` |
-| `panel:blur` | Panel lost focus | `{ panelId: string }` |
-| `data:refresh` | Data was refreshed | `{ slices: string[] }` |
+| Event                | Description        | Payload                |
+| -------------------- | ------------------ | ---------------------- |
+| `file:opened`        | File was opened    | `{ filePath: string }` |
+| `file:saved`         | File was saved     | `{ filePath: string }` |
+| `file:deleted`       | File was deleted   | `{ filePath: string }` |
+| `git:status-changed` | Git status changed | `GitStatus`            |
+| `git:commit`         | Git commit made    | `{ hash: string }`     |
+| `git:branch-changed` | Branch changed     | `{ branch: string }`   |
+| `panel:focus`        | Panel gained focus | `{ panelId: string }`  |
+| `panel:blur`         | Panel lost focus   | `{ panelId: string }`  |
+| `data:refresh`       | Data was refreshed | `{ slices: string[] }` |
 
 ## Dependencies
 
@@ -452,8 +454,8 @@ Standard panel events:
 
 These are provided by the host application:
 
-- `react` >= 18.0.0
-- `react-dom` >= 18.0.0
+- `react` >= 19.0.0
+- `react-dom` >= 19.0.0
 
 ### Optional Peer Dependencies
 
@@ -480,6 +482,7 @@ These will be bundled into your panel output.
 ### Panel Not Discovered
 
 Ensure `package.json` has:
+
 ```json
 {
   "keywords": ["panel-extension"],
@@ -490,13 +493,15 @@ Ensure `package.json` has:
 ### Build Errors
 
 Check that peer dependencies are externalized in `vite.config.ts`:
+
 ```typescript
-external: ['react', 'react-dom']
+external: ['react', 'react-dom'];
 ```
 
 ### Type Errors
 
 Ensure TypeScript can find types:
+
 ```bash
 bun run typecheck
 ```
@@ -504,6 +509,7 @@ bun run typecheck
 ### Runtime Errors
 
 Check browser console and ensure:
+
 - Panel ID is unique
 - Required exports are present (`panels` array)
 - Component is a valid React component
@@ -525,5 +531,6 @@ Contributions welcome! Please read the contributing guidelines first.
 ## Support
 
 For issues and questions:
+
 - [GitHub Issues](https://github.com/your-org/your-panel-name/issues)
 - [Discussions](https://github.com/your-org/your-panel-name/discussions)

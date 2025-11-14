@@ -1,4 +1,3 @@
-import React from 'react';
 import { ExamplePanel } from './panels/ExamplePanel';
 import type { PanelDefinition, PanelContextValue } from './types';
 
@@ -18,8 +17,8 @@ export const panels: PanelDefinition[] = [
 
     // Optional: Called when this specific panel is mounted
     onMount: async (context: PanelContextValue) => {
-      console.log('Example Panel mounted');
-      console.log('Repository:', context.repositoryPath);
+      // eslint-disable-next-line no-console
+      console.log('Example Panel mounted', context.repositoryPath);
 
       // Example: Refresh data if git slice is available
       if (context.hasSlice('git') && !context.isSliceLoading('git')) {
@@ -28,12 +27,14 @@ export const panels: PanelDefinition[] = [
     },
 
     // Optional: Called when this specific panel is unmounted
-    onUnmount: async (context: PanelContextValue) => {
+    onUnmount: async (_context: PanelContextValue) => {
+      // eslint-disable-next-line no-console
       console.log('Example Panel unmounting');
     },
 
     // Optional: Called when data slices change
     onDataChange: (slice, data) => {
+      // eslint-disable-next-line no-console
       console.log(`Data changed for slice: ${slice}`, data);
     },
   },
@@ -44,6 +45,7 @@ export const panels: PanelDefinition[] = [
  * Use this for package-level initialization.
  */
 export const onPackageLoad = async () => {
+  // eslint-disable-next-line no-console
   console.log('Panel package loaded - Example Panel Extension');
 };
 
@@ -52,5 +54,6 @@ export const onPackageLoad = async () => {
  * Use this for package-level cleanup.
  */
 export const onPackageUnload = async () => {
+  // eslint-disable-next-line no-console
   console.log('Panel package unloading - Example Panel Extension');
 };

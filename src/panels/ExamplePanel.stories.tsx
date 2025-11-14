@@ -31,6 +31,11 @@ const meta = {
       </div>
     ),
   ],
+  args: {
+    context: createMockContext(),
+    actions: createMockActions(),
+    events: createMockEvents(),
+  },
 } satisfies Meta<typeof ExamplePanel>;
 
 export default meta;

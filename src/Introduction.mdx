@@ -25,6 +25,7 @@ Panel extensions are React components distributed via NPM that can be dynamicall
 ### Quick Start
 
 1. **Install dependencies**
+
    ```bash
    bun install
    ```
@@ -34,6 +35,7 @@ Panel extensions are React components distributed via NPM that can be dynamicall
    - Update `src/index.tsx` with your panel metadata
 
 3. **Develop with Storybook**
+
    ```bash
    bun run storybook
    ```
@@ -61,7 +63,9 @@ panel-starter/
 Every panel component receives these props from the host application:
 
 ### Context
+
 Access to shared data and state:
+
 - Repository information
 - Git status
 - File tree
@@ -70,14 +74,18 @@ Access to shared data and state:
 - Refresh methods
 
 ### Actions
+
 Interact with the host application:
+
 - `openFile(path)` - Open a file in the editor
 - `openGitDiff(path, status)` - View git diff
 - `navigateToPanel(id)` - Navigate to another panel
 - `notifyPanels(event)` - Send notifications
 
 ### Events
+
 Subscribe to and emit panel events:
+
 - `events.on(type, handler)` - Subscribe to events
 - `events.emit(event)` - Emit custom events
 - `events.off(type, handler)` - Unsubscribe

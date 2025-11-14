@@ -26,6 +26,7 @@ bun install
 ### Making Changes
 
 1. **Create a branch** for your changes:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -33,6 +34,7 @@ bun install
 2. **Make your changes** following the code style guidelines below
 
 3. **Test your changes**:
+
    ```bash
    # Type checking
    bun run typecheck
@@ -45,6 +47,7 @@ bun install
    ```
 
 4. **Format your code**:
+
    ```bash
    bun run format
    ```
@@ -68,6 +71,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` - Maintenance tasks
 
 Examples:
+
 ```
 feat: add new panel lifecycle hook
 fix: correct type definition for PanelContext
@@ -91,6 +95,7 @@ docs: update README with new examples
 - Clean up effects with return functions
 
 Example:
+
 ```tsx
 import React, { useEffect } from 'react';
 import type { PanelComponentProps } from '../types';

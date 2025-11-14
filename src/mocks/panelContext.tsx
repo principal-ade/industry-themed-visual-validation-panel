@@ -64,7 +64,7 @@ export const createMockContext = (
     ],
   },
   packages: [
-    { name: 'react', version: '18.3.1', path: '/node_modules/react' },
+    { name: 'react', version: '19.0.0', path: '/node_modules/react' },
     { name: 'typescript', version: '5.0.4', path: '/node_modules/typescript' },
   ],
   quality: {
@@ -74,13 +74,16 @@ export const createMockContext = (
   },
   loading: false,
   refresh: async () => {
+    // eslint-disable-next-line no-console
     console.log('[Mock] Context refresh called');
   },
   hasSlice: (slice) => {
+    // eslint-disable-next-line no-console
     console.log('[Mock] Checking slice:', slice);
     return true;
   },
   isSliceLoading: (slice) => {
+    // eslint-disable-next-line no-console
     console.log('[Mock] Checking if slice is loading:', slice);
     return false;
   },
@@ -94,15 +97,19 @@ export const createMockActions = (
   overrides?: Partial<PanelActions>
 ): PanelActions => ({
   openFile: (filePath: string) => {
+    // eslint-disable-next-line no-console
     console.log('[Mock] Opening file:', filePath);
   },
   openGitDiff: (filePath: string, status) => {
+    // eslint-disable-next-line no-console
     console.log('[Mock] Opening git diff:', filePath, status);
   },
   navigateToPanel: (panelId: string) => {
+    // eslint-disable-next-line no-console
     console.log('[Mock] Navigating to panel:', panelId);
   },
   notifyPanels: (event) => {
+    // eslint-disable-next-line no-console
     console.log('[Mock] Notifying panels:', event);
   },
   ...overrides,
@@ -112,10 +119,14 @@ export const createMockActions = (
  * Mock Event Emitter for Storybook
  */
 export const createMockEvents = (): PanelEventEmitter => {
-  const handlers = new Map<PanelEventType, Set<(event: PanelEvent) => void>>();
+  const handlers = new Map<
+    PanelEventType,
+    Set<(event: PanelEvent<unknown>) => void>
+  >();
 
   return {
     emit: (event) => {
+      // eslint-disable-next-line no-console
       console.log('[Mock] Emitting event:', event);
       const eventHandlers = handlers.get(event.type);
       if (eventHandlers) {
@@ -123,21 +134,28 @@ export const createMockEvents = (): PanelEventEmitter => {
       }
     },
     on: (type, handler) => {
+      // eslint-disable-next-line no-console
       console.log('[Mock] Subscribing to event:', type);
       if (!handlers.has(type)) {
         handlers.set(type, new Set());
       }
-      handlers.get(type)!.add(handler);
+      handlers.get(type)!.add(handler as (event: PanelEvent<unknown>) => void);
 
       // Return cleanup function
       return () => {
+        // eslint-disable-next-line no-console
         console.log('[Mock] Unsubscribing from event:', type);
-        handlers.get(type)?.delete(handler);
+        handlers
+          .get(type)
+          ?.delete(handler as (event: PanelEvent<unknown>) => void);
       };
     },
     off: (type, handler) => {
+      // eslint-disable-next-line no-console
       console.log('[Mock] Removing event handler:', type);
-      handlers.get(type)?.delete(handler);
+      handlers
+        .get(type)
+        ?.delete(handler as (event: PanelEvent<unknown>) => void);
     },
   };
 };

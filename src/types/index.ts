@@ -1,10 +1,15 @@
-import type { ComponentType, ReactNode } from 'react';
+import type { ComponentType } from 'react';
 
 /**
  * Panel data slices available from the host application.
  * Panels can declare dependencies on these slices.
  */
-export type PanelDataSlice = 'git' | 'markdown' | 'fileTree' | 'packages' | 'quality';
+export type PanelDataSlice =
+  | 'git'
+  | 'markdown'
+  | 'fileTree'
+  | 'packages'
+  | 'quality';
 
 /**
  * Panel event types for inter-panel communication.
@@ -133,7 +138,10 @@ export interface PanelActions {
  */
 export interface PanelEventEmitter {
   emit<T>(event: PanelEvent<T>): void;
-  on<T>(type: PanelEventType, handler: (event: PanelEvent<T>) => void): () => void;
+  on<T>(
+    type: PanelEventType,
+    handler: (event: PanelEvent<T>) => void
+  ): () => void;
   off<T>(type: PanelEventType, handler: (event: PanelEvent<T>) => void): void;
 }
 

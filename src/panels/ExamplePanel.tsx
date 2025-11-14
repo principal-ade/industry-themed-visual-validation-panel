@@ -20,13 +20,16 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
 
   // Subscribe to panel events
   useEffect(() => {
-    const unsubscribe = events.on('file:opened', (event) => {
-      const timestamp = new Date().toLocaleTimeString();
-      setEventLog((prev) => [
-        ...prev,
-        `[${timestamp}] File opened: ${event.payload?.filePath || 'unknown'}`,
-      ]);
-    });
+    const unsubscribe = events.on<{ filePath: string }>(
+      'file:opened',
+      (event) => {
+        const timestamp = new Date().toLocaleTimeString();
+        setEventLog((prev) => [
+          ...prev,
+          `[${timestamp}] File opened: ${event.payload?.filePath || 'unknown'}`,
+        ]);
+      }
+    );
 
     return unsubscribe;
   }, [events]);
@@ -125,7 +128,9 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
           {context.gitStatusLoading ? (
             <p style={{ color: '#666', margin: 0 }}>Loading git status...</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               <div>
                 <strong>Staged:</strong> {context.gitStatus.staged.length} files
               </div>

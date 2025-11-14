@@ -74,6 +74,7 @@ bun run storybook
 ```
 
 Storybook opens at `http://localhost:6006` with:
+
 - Live panel preview
 - Interactive prop controls
 - Multiple example states
