@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { FileText, RefreshCw } from 'lucide-react';
+import { ThemeProvider, useTheme } from '@principal-ade/industry-theme';
 import type { PanelComponentProps } from '../types';
 
 /**
- * ExamplePanel - A simple panel demonstrating the panel framework integration.
- *
- * This panel shows:
- * - How to access panel context (repository info, data slices)
- * - How to use panel actions (open files, navigate)
- * - How to subscribe to panel events
- * - How to display loading states
+ * ExamplePanelContent - Internal component that uses theme
  */
-export const ExamplePanel: React.FC<PanelComponentProps> = ({
+const ExamplePanelContent: React.FC<PanelComponentProps> = ({
   context,
   actions,
   events,
 }) => {
   const [eventLog, setEventLog] = useState<string[]>([]);
+  const { theme } = useTheme();
 
   // Subscribe to panel events
   useEffect(() => {
@@ -43,24 +39,42 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
     }
   };
 
-  // Check if git data is available
+  // Get data slices
+  const gitSlice = context.getSlice<{
+    staged: string[];
+    unstaged: string[];
+    untracked: string[];
+    deleted: string[];
+  }>('git');
+
   const hasGitData = context.hasSlice('git');
+  const isGitLoading = context.isSliceLoading('git');
 
   return (
     <div
       style={{
         padding: '20px',
-        fontFamily: 'system-ui, sans-serif',
+        fontFamily: theme.fonts.body,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
+        backgroundColor: theme.colors.background,
+        color: theme.colors.text,
       }}
     >
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <FileText size={24} />
-        <h2 style={{ margin: 0, fontSize: '1.5rem' }}>Example Panel</h2>
+        <FileText size={24} color={theme.colors.primary} />
+        <h2
+          style={{
+            margin: 0,
+            fontSize: theme.fontSizes[4],
+            color: theme.colors.text,
+          }}
+        >
+          Example Panel
+        </h2>
         <button
           onClick={handleRefresh}
           style={{
@@ -69,12 +83,12 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            background: 'white',
+            border: `1px solid ${theme.colors.border}`,
+            borderRadius: theme.radii[1],
+            background: theme.colors.surface,
+            color: theme.colors.text,
             cursor: 'pointer',
           }}
-          disabled={context.loading}
         >
           <RefreshCw size={16} />
           Refresh
@@ -85,31 +99,42 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
       <section
         style={{
           padding: '16px',
-          background: '#f5f5f5',
-          borderRadius: '8px',
+          background: theme.colors.backgroundSecondary,
+          borderRadius: theme.radii[2],
+          border: `1px solid ${theme.colors.border}`,
         }}
       >
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '1.1rem' }}>
+        <h3
+          style={{
+            margin: '0 0 12px 0',
+            fontSize: theme.fontSizes[3],
+            color: theme.colors.text,
+          }}
+        >
           Repository Info
         </h3>
-        {context.repositoryPath ? (
+        {context.currentScope.repository ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div>
-              <strong>Path:</strong> <code>{context.repositoryPath}</code>
+              <strong style={{ color: theme.colors.text }}>Path:</strong>{' '}
+              <code
+                style={{
+                  fontFamily: theme.fonts.monospace,
+                  color: theme.colors.textSecondary,
+                }}
+              >
+                {context.currentScope.repository.path}
+              </code>
             </div>
-            {context.repository?.name && (
-              <div>
-                <strong>Name:</strong> {context.repository.name}
-              </div>
-            )}
-            {context.repository?.branch && (
-              <div>
-                <strong>Branch:</strong> {context.repository.branch}
-              </div>
-            )}
+            <div>
+              <strong style={{ color: theme.colors.text }}>Name:</strong>{' '}
+              {context.currentScope.repository.name}
+            </div>
           </div>
         ) : (
-          <p style={{ color: '#666', margin: 0 }}>No repository loaded</p>
+          <p style={{ color: theme.colors.textMuted, margin: 0 }}>
+            No repository loaded
+          </p>
         )}
       </section>
 
@@ -118,31 +143,47 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
         <section
           style={{
             padding: '16px',
-            background: '#f0f9ff',
-            borderRadius: '8px',
+            background: theme.colors.backgroundSecondary,
+            borderRadius: theme.radii[2],
+            border: `1px solid ${theme.colors.border}`,
           }}
         >
-          <h3 style={{ margin: '0 0 12px 0', fontSize: '1.1rem' }}>
+          <h3
+            style={{
+              margin: '0 0 12px 0',
+              fontSize: theme.fontSizes[3],
+              color: theme.colors.text,
+            }}
+          >
             Git Status
           </h3>
-          {context.gitStatusLoading ? (
-            <p style={{ color: '#666', margin: 0 }}>Loading git status...</p>
-          ) : (
+          {isGitLoading ? (
+            <p style={{ color: theme.colors.textMuted, margin: 0 }}>
+              Loading git status...
+            </p>
+          ) : gitSlice?.data ? (
             <div
               style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
             >
               <div>
-                <strong>Staged:</strong> {context.gitStatus.staged.length} files
+                <strong style={{ color: theme.colors.success }}>Staged:</strong>{' '}
+                {gitSlice.data.staged.length} files
               </div>
               <div>
-                <strong>Unstaged:</strong> {context.gitStatus.unstaged.length}{' '}
-                files
+                <strong style={{ color: theme.colors.warning }}>
+                  Unstaged:
+                </strong>{' '}
+                {gitSlice.data.unstaged.length} files
               </div>
               <div>
-                <strong>Untracked:</strong> {context.gitStatus.untracked.length}{' '}
-                files
+                <strong style={{ color: theme.colors.info }}>Untracked:</strong>{' '}
+                {gitSlice.data.untracked.length} files
               </div>
             </div>
+          ) : (
+            <p style={{ color: theme.colors.textMuted, margin: 0 }}>
+              No git data available
+            </p>
           )}
         </section>
       )}
@@ -151,29 +192,41 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
       <section
         style={{
           padding: '16px',
-          background: '#fff9e6',
-          borderRadius: '8px',
+          background: theme.colors.backgroundSecondary,
+          borderRadius: theme.radii[2],
+          border: `1px solid ${theme.colors.border}`,
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
         }}
       >
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '1.1rem' }}>Event Log</h3>
+        <h3
+          style={{
+            margin: '0 0 12px 0',
+            fontSize: theme.fontSizes[3],
+            color: theme.colors.text,
+          }}
+        >
+          Event Log
+        </h3>
         <div
           style={{
             flex: 1,
             overflowY: 'auto',
-            fontFamily: 'monospace',
-            fontSize: '0.9rem',
-            background: 'white',
+            fontFamily: theme.fonts.monospace,
+            fontSize: theme.fontSizes[1],
+            background: theme.colors.background,
+            color: theme.colors.textSecondary,
             padding: '12px',
-            borderRadius: '4px',
-            border: '1px solid #e6ddc4',
+            borderRadius: theme.radii[1],
+            border: `1px solid ${theme.colors.border}`,
           }}
         >
           {eventLog.length === 0 ? (
-            <p style={{ color: '#666', margin: 0 }}>No events yet...</p>
+            <p style={{ color: theme.colors.textMuted, margin: 0 }}>
+              No events yet...
+            </p>
           ) : (
             eventLog.map((log, index) => (
               <div key={index} style={{ marginBottom: '4px' }}>
@@ -188,11 +241,18 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
       <section
         style={{
           padding: '16px',
-          background: '#f5f5f5',
-          borderRadius: '8px',
+          background: theme.colors.backgroundSecondary,
+          borderRadius: theme.radii[2],
+          border: `1px solid ${theme.colors.border}`,
         }}
       >
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '1.1rem' }}>
+        <h3
+          style={{
+            margin: '0 0 12px 0',
+            fontSize: theme.fontSizes[3],
+            color: theme.colors.text,
+          }}
+        >
           Example Actions
         </h3>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -200,11 +260,12 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
             onClick={() => actions.openFile?.('README.md')}
             style={{
               padding: '8px 16px',
-              border: '1px solid #007bff',
-              borderRadius: '4px',
-              background: '#007bff',
-              color: 'white',
+              border: `1px solid ${theme.colors.primary}`,
+              borderRadius: theme.radii[1],
+              background: theme.colors.primary,
+              color: theme.colors.background,
               cursor: 'pointer',
+              fontWeight: theme.fontWeights.medium,
             }}
           >
             Open README.md
@@ -213,11 +274,12 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
             onClick={() => actions.navigateToPanel?.('git-status')}
             style={{
               padding: '8px 16px',
-              border: '1px solid #28a745',
-              borderRadius: '4px',
-              background: '#28a745',
-              color: 'white',
+              border: `1px solid ${theme.colors.success}`,
+              borderRadius: theme.radii[1],
+              background: theme.colors.success,
+              color: theme.colors.background,
               cursor: 'pointer',
+              fontWeight: theme.fontWeights.medium,
             }}
           >
             Navigate to Git Panel
@@ -225,5 +287,23 @@ export const ExamplePanel: React.FC<PanelComponentProps> = ({
         </div>
       </section>
     </div>
+  );
+};
+
+/**
+ * ExamplePanel - A simple panel demonstrating the panel framework integration.
+ *
+ * This panel shows:
+ * - How to access panel context (repository info, data slices)
+ * - How to use panel actions (open files, navigate)
+ * - How to subscribe to panel events
+ * - How to display loading states
+ * - How to use the industry theme
+ */
+export const ExamplePanel: React.FC<PanelComponentProps> = (props) => {
+  return (
+    <ThemeProvider>
+      <ExamplePanelContent {...props} />
+    </ThemeProvider>
   );
 };

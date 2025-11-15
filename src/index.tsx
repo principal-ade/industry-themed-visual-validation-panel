@@ -7,22 +7,28 @@ import type { PanelDefinition, PanelContextValue } from './types';
  */
 export const panels: PanelDefinition[] = [
   {
-    id: 'your-org.example-panel',
-    name: 'Example Panel',
-    icon: '📝',
-    version: '0.1.0',
-    author: 'Your Organization',
-    description: 'A simple example panel demonstrating the panel framework',
+    metadata: {
+      id: 'your-org.example-panel',
+      name: 'Example Panel',
+      icon: '📝',
+      version: '0.1.0',
+      author: 'Your Organization',
+      description: 'A simple example panel demonstrating the panel framework',
+      slices: ['git', 'markdown', 'fileTree'], // Data slices this panel depends on
+    },
     component: ExamplePanel,
 
     // Optional: Called when this specific panel is mounted
     onMount: async (context: PanelContextValue) => {
       // eslint-disable-next-line no-console
-      console.log('Example Panel mounted', context.repositoryPath);
+      console.log(
+        'Example Panel mounted',
+        context.currentScope.repository?.path
+      );
 
-      // Example: Refresh data if git slice is available
+      // Example: Refresh git data if available
       if (context.hasSlice('git') && !context.isSliceLoading('git')) {
-        await context.refresh();
+        await context.refresh('repository', 'git');
       }
     },
 
@@ -30,12 +36,6 @@ export const panels: PanelDefinition[] = [
     onUnmount: async (_context: PanelContextValue) => {
       // eslint-disable-next-line no-console
       console.log('Example Panel unmounting');
-    },
-
-    // Optional: Called when data slices change
-    onDataChange: (slice, data) => {
-      // eslint-disable-next-line no-console
-      console.log(`Data changed for slice: ${slice}`, data);
     },
   },
 ];

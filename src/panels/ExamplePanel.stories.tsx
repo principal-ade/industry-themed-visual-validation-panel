@@ -6,6 +6,7 @@ import {
   createMockActions,
   createMockEvents,
 } from '../mocks/panelContext';
+import type { DataSlice } from '../types';
 
 /**
  * ExamplePanel demonstrates the panel framework integration.
@@ -56,16 +57,27 @@ export const Default: Story = {
  * Loading state - shows loading indicators
  */
 export const Loading: Story = {
-  render: () => (
-    <MockPanelProvider
-      contextOverrides={{
-        loading: true,
-        gitStatusLoading: true,
-      }}
-    >
-      {(props) => <ExamplePanel {...props} />}
-    </MockPanelProvider>
-  ),
+  render: () => {
+    const mockSlices = new Map<string, DataSlice>();
+    mockSlices.set('git', {
+      scope: 'repository',
+      name: 'git',
+      data: null,
+      loading: true,
+      error: null,
+      refresh: async () => {},
+    });
+
+    return (
+      <MockPanelProvider
+        contextOverrides={{
+          slices: mockSlices,
+        }}
+      >
+        {(props) => <ExamplePanel {...props} />}
+      </MockPanelProvider>
+    );
+  },
 };
 
 /**
@@ -75,8 +87,13 @@ export const NoRepository: Story = {
   render: () => (
     <MockPanelProvider
       contextOverrides={{
-        repositoryPath: null,
-        repository: null,
+        currentScope: {
+          type: 'workspace',
+          workspace: {
+            name: 'my-workspace',
+            path: '/Users/developer/my-workspace',
+          },
+        },
       }}
     >
       {(props) => <ExamplePanel {...props} />}
@@ -88,49 +105,73 @@ export const NoRepository: Story = {
  * Empty git status - no changes
  */
 export const EmptyGitStatus: Story = {
-  render: () => (
-    <MockPanelProvider
-      contextOverrides={{
-        gitStatus: {
-          staged: [],
-          unstaged: [],
-          untracked: [],
-          deleted: [],
-        },
-      }}
-    >
-      {(props) => <ExamplePanel {...props} />}
-    </MockPanelProvider>
-  ),
+  render: () => {
+    const mockSlices = new Map<string, DataSlice>();
+    mockSlices.set('git', {
+      scope: 'repository',
+      name: 'git',
+      data: {
+        staged: [],
+        unstaged: [],
+        untracked: [],
+        deleted: [],
+      },
+      loading: false,
+      error: null,
+      refresh: async () => {},
+    });
+
+    return (
+      <MockPanelProvider
+        contextOverrides={{
+          slices: mockSlices,
+        }}
+      >
+        {(props) => <ExamplePanel {...props} />}
+      </MockPanelProvider>
+    );
+  },
 };
 
 /**
  * Lots of changes in git
  */
 export const ManyGitChanges: Story = {
-  render: () => (
-    <MockPanelProvider
-      contextOverrides={{
-        gitStatus: {
-          staged: Array.from(
-            { length: 10 },
-            (_, i) => `src/components/Component${i}.tsx`
-          ),
-          unstaged: Array.from(
-            { length: 15 },
-            (_, i) => `src/utils/util${i}.ts`
-          ),
-          untracked: Array.from(
-            { length: 8 },
-            (_, i) => `src/new/file${i}.tsx`
-          ),
-          deleted: ['src/old/deprecated.ts'],
-        },
-      }}
-    >
-      {(props) => <ExamplePanel {...props} />}
-    </MockPanelProvider>
-  ),
+  render: () => {
+    const mockSlices = new Map<string, DataSlice>();
+    mockSlices.set('git', {
+      scope: 'repository',
+      name: 'git',
+      data: {
+        staged: Array.from(
+          { length: 10 },
+          (_, i) => `src/components/Component${i}.tsx`
+        ),
+        unstaged: Array.from(
+          { length: 15 },
+          (_, i) => `src/utils/util${i}.ts`
+        ),
+        untracked: Array.from(
+          { length: 8 },
+          (_, i) => `src/new/file${i}.tsx`
+        ),
+        deleted: ['src/old/deprecated.ts'],
+      },
+      loading: false,
+      error: null,
+      refresh: async () => {},
+    });
+
+    return (
+      <MockPanelProvider
+        contextOverrides={{
+          slices: mockSlices,
+        }}
+      >
+        {(props) => <ExamplePanel {...props} />}
+      </MockPanelProvider>
+    );
+  },
 };
 
 /**
@@ -157,15 +198,21 @@ export const WithInteractiveActions: Story = {
  * Panel without git data slice
  */
 export const NoGitSlice: Story = {
-  render: () => (
-    <MockPanelProvider
-      contextOverrides={{
-        hasSlice: (slice) => slice !== 'git',
-      }}
-    >
-      {(props) => <ExamplePanel {...props} />}
-    </MockPanelProvider>
-  ),
+  render: () => {
+    const mockSlices = new Map<string, DataSlice>();
+    // Only add non-git slices
+
+    return (
+      <MockPanelProvider
+        contextOverrides={{
+          slices: mockSlices,
+          hasSlice: (name) => name !== 'git',
+        }}
+      >
+        {(props) => <ExamplePanel {...props} />}
+      </MockPanelProvider>
+    );
+  },
 };
 
 /**
@@ -175,12 +222,18 @@ export const CustomRepository: Story = {
   render: () => (
     <MockPanelProvider
       contextOverrides={{
-        repositoryPath: '/home/user/awesome-project',
-        repository: {
-          name: 'awesome-project',
-          path: '/home/user/awesome-project',
-          branch: 'feature/new-feature',
-          remote: 'upstream',
+        currentScope: {
+          type: 'repository',
+          workspace: {
+            name: 'my-workspace',
+            path: '/home/user',
+          },
+          repository: {
+            name: 'awesome-project',
+            path: '/home/user/awesome-project',
+            branch: 'feature/new-feature',
+            remote: 'upstream',
+          },
         },
       }}
     >
