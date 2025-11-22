@@ -1,15 +1,18 @@
 {
-  "name": "@your-org/panel-starter",
+  "name": "@industry-theme/visual-validation-panel",
   "version": "0.1.1",
-  "description": "Starter template for building panel extensions compatible with @principal-ade/panel-framework-core",
+  "description": "Visual Validation Graph Panel for visualizing vvf.config.yaml files as interactive diagrams",
   "type": "module",
   "main": "dist/panels.bundle.js",
   "module": "dist/panels.bundle.js",
   "types": "dist/index.d.ts",
   "keywords": [
-    "panel-extension"
+    "panel-extension",
+    "visual-validation",
+    "graph",
+    "panel"
   ],
-  "author": "Your Name",
+  "author": "Principal AI",
   "license": "MIT",
   "scripts": {
     "build": "bun run clean && bun run build:panel && bun run build:types",
