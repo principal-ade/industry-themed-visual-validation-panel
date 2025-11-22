@@ -1,4 +1,5 @@
 import { ExamplePanel } from './panels/ExamplePanel';
+import { VisualValidationGraphPanel } from './panels/VisualValidationGraphPanel';
 import type { PanelDefinition, PanelContextValue } from './types';
 
 /**
@@ -6,6 +7,38 @@ import type { PanelDefinition, PanelContextValue } from './types';
  * This is the required export for panel extensions.
  */
 export const panels: PanelDefinition[] = [
+  {
+    metadata: {
+      id: 'principal-ai.visual-validation-graph',
+      name: 'Visual Validation Graph',
+      icon: '🕸️',
+      version: '0.1.0',
+      author: 'Principal AI',
+      description: 'Visualizes vvf.config.yaml configuration files as interactive graph diagrams',
+      slices: ['fileTree'], // Data slices this panel depends on
+    },
+    component: VisualValidationGraphPanel,
+
+    // Optional: Called when this specific panel is mounted
+    onMount: async (context: PanelContextValue) => {
+      // eslint-disable-next-line no-console
+      console.log(
+        'Visual Validation Graph Panel mounted',
+        context.currentScope.repository?.path
+      );
+
+      // Refresh file tree if available
+      if (context.hasSlice('fileTree') && !context.isSliceLoading('fileTree')) {
+        await context.refresh('repository', 'fileTree');
+      }
+    },
+
+    // Optional: Called when this specific panel is unmounted
+    onUnmount: async (_context: PanelContextValue) => {
+      // eslint-disable-next-line no-console
+      console.log('Visual Validation Graph Panel unmounting');
+    },
+  },
   {
     metadata: {
       id: 'your-org.example-panel',
