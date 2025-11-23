@@ -3,8 +3,8 @@ import type { PanelComponentProps } from '@principal-ade/panel-framework-core';
 import { useTheme } from '@principal-ade/industry-theme';
 import { GraphRenderer } from '@principal-ai/visual-validation-react';
 import type { PathBasedGraphConfiguration, NodeState, EdgeState } from '@principal-ai/visual-validation-core';
-import { FileText, AlertCircle, Loader, ExternalLink, BookOpen } from 'lucide-react';
-import { ConfigLoader } from './visual-validation/ConfigLoader';
+import { FileText, AlertCircle, Loader, ExternalLink, BookOpen, ChevronDown } from 'lucide-react';
+import { ConfigLoader, type ConfigFile } from './visual-validation/ConfigLoader';
 import { GraphConverter } from './visual-validation/GraphConverter';
 
 interface GraphPanelState {
@@ -13,6 +13,8 @@ interface GraphPanelState {
   edges: EdgeState[];
   loading: boolean;
   error: string | null;
+  availableConfigs: ConfigFile[];
+  selectedConfigId: string | null;
 }
 
 const EmptyStateContent: React.FC<{ theme: any }> = ({ theme }) => {
@@ -252,6 +254,7 @@ const EmptyStateContent: React.FC<{ theme: any }> = ({ theme }) => {
  */
 export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
   context,
+  actions,
   events
 }) => {
   const { theme } = useTheme();
@@ -260,10 +263,12 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
     nodes: [],
     edges: [],
     loading: true,
-    error: null
+    error: null,
+    availableConfigs: [],
+    selectedConfigId: null
   });
 
-  const loadConfiguration = useCallback(async () => {
+  const loadConfiguration = useCallback(async (configId?: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
@@ -278,50 +283,127 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
       }
 
       const fileTreeSlice = context.getSlice('fileTree');
-      const fileTreeData = fileTreeSlice?.data;
+      const fileTreeData = fileTreeSlice?.data as { allFiles?: Array<{ path?: string; relativePath?: string; name?: string }> } | null;
 
-      // For now, we'll expect fileTree to be an array of files
-      // This may need adjustment based on actual FileTree structure
-      const files = Array.isArray(fileTreeData) ? fileTreeData : (fileTreeData as { files?: unknown[] })?.files || [];
+      console.log('[VisualValidation] FileTree data:', {
+        hasData: !!fileTreeData,
+        hasAllFiles: !!fileTreeData?.allFiles,
+        fileCount: fileTreeData?.allFiles?.length,
+        sampleFiles: fileTreeData?.allFiles?.slice(0, 5)
+      });
 
-      // Look for vvf.config.yaml
-      const configContent = ConfigLoader.findConfigContent(files);
-
-      if (!configContent) {
-        // No config found - show empty state (not an error)
+      if (!fileTreeData?.allFiles) {
+        // No file tree data - show empty state
+        console.log('[VisualValidation] No file tree data available');
         setState({
           config: null,
           nodes: [],
           edges: [],
           loading: false,
-          error: null
+          error: null,
+          availableConfigs: [],
+          selectedConfigId: null
         });
         return;
       }
 
+      // Find all available configs
+      const availableConfigs = ConfigLoader.findConfigs(fileTreeData.allFiles);
+      console.log('[VisualValidation] Found configs:', availableConfigs);
+
+      if (availableConfigs.length === 0) {
+        // No config found - show empty state (not an error)
+        console.log('[VisualValidation] No config files found in file tree');
+        setState({
+          config: null,
+          nodes: [],
+          edges: [],
+          loading: false,
+          error: null,
+          availableConfigs: [],
+          selectedConfigId: null
+        });
+        return;
+      }
+
+      // Determine which config to load
+      let selectedConfig: ConfigFile;
+      if (configId) {
+        // Load specific config by ID
+        const found = availableConfigs.find(c => c.id === configId);
+        if (!found) {
+          throw new Error(`Config with ID '${configId}' not found`);
+        }
+        selectedConfig = found;
+      } else if (state.selectedConfigId) {
+        // Try to keep the currently selected config
+        const found = availableConfigs.find(c => c.id === state.selectedConfigId);
+        selectedConfig = found || availableConfigs[0];
+      } else {
+        // Load the first config by default
+        selectedConfig = availableConfigs[0];
+      }
+
+      console.log('[VisualValidation] Selected config:', selectedConfig);
+
+      // Read file contents using the readFile action
+      const readFile = (actions as { readFile?: (path: string) => Promise<string> }).readFile;
+      if (!readFile) {
+        console.error('[VisualValidation] readFile action not available');
+        throw new Error('readFile action not available');
+      }
+
+      // Get repository path from context
+      const repositoryPath = (context as { repositoryPath?: string }).repositoryPath;
+      console.log('[VisualValidation] Repository path:', repositoryPath);
+      if (!repositoryPath) {
+        throw new Error('Repository path not available');
+      }
+
+      // Construct full file path
+      const fullPath = `${repositoryPath}/${selectedConfig.path}`;
+      console.log('[VisualValidation] Reading config from:', fullPath);
+      const fileResult = await readFile(fullPath);
+      console.log('[VisualValidation] File result:', fileResult);
+
+      if (!fileResult || typeof fileResult !== 'object' || !('content' in fileResult)) {
+        throw new Error('Failed to read config file');
+      }
+
+      const configContent = (fileResult as { content: string }).content;
+      console.log('[VisualValidation] Config content loaded, length:', configContent.length);
+      console.log('[VisualValidation] Content preview:', configContent.substring(0, 200));
+
       // Parse YAML config
       const config = ConfigLoader.parseYaml(configContent);
+      console.log('[VisualValidation] Parsed config:', config);
 
       // Convert config to nodes/edges
       const { nodes, edges } = GraphConverter.configToGraph(config);
+      console.log('[VisualValidation] Generated graph - nodes:', nodes.length, 'edges:', edges.length);
 
       setState({
         config,
         nodes,
         edges,
         loading: false,
-        error: null
+        error: null,
+        availableConfigs,
+        selectedConfigId: selectedConfig.id
       });
     } catch (error) {
-      setState({
+      console.error('[VisualValidation] Error during config load:', error);
+      setState(prev => ({
         config: null,
         nodes: [],
         edges: [],
         loading: false,
-        error: (error as Error).message
-      });
+        error: (error as Error).message,
+        availableConfigs: prev.availableConfigs,
+        selectedConfigId: prev.selectedConfigId
+      }));
     }
-  }, [context]);
+  }, [context, actions, state.selectedConfigId]);
 
   // Load configuration on mount
   useEffect(() => {
@@ -376,7 +458,7 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
           {state.error}
         </p>
         <button
-          onClick={loadConfiguration}
+          onClick={() => loadConfiguration()}
           style={{
             marginTop: theme.space[4],
             padding: `${theme.space[2]} ${theme.space[4]}`,
@@ -415,15 +497,64 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
         flexShrink: 0
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <h2 style={{
-              margin: 0,
-              fontSize: theme.fontSizes[3],
-              fontWeight: theme.fontWeights.medium,
-              color: theme.colors.text
-            }}>
-              {state.config.metadata.name}
-            </h2>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[3] }}>
+              <h2 style={{
+                margin: 0,
+                fontSize: theme.fontSizes[3],
+                fontWeight: theme.fontWeights.medium,
+                color: theme.colors.text
+              }}>
+                {state.config.metadata.name}
+              </h2>
+
+              {/* Config Selector - only show if multiple configs available */}
+              {state.availableConfigs.length > 1 && (
+                <div style={{ position: 'relative' }}>
+                  <select
+                    value={state.selectedConfigId || ''}
+                    onChange={(e) => loadConfiguration(e.target.value)}
+                    style={{
+                      appearance: 'none',
+                      padding: `${theme.space[1]} ${theme.space[4]} ${theme.space[1]} ${theme.space[2]}`,
+                      fontSize: theme.fontSizes[1],
+                      fontFamily: theme.fonts.body,
+                      color: theme.colors.text,
+                      backgroundColor: theme.colors.backgroundSecondary,
+                      border: `1px solid ${theme.colors.border}`,
+                      borderRadius: theme.radii[1],
+                      cursor: 'pointer',
+                      outline: 'none',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.borderColor = theme.colors.primary;
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.borderColor = theme.colors.border;
+                    }}
+                  >
+                    {state.availableConfigs.map(config => (
+                      <option key={config.id} value={config.id}>
+                        {config.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={14}
+                    style={{
+                      position: 'absolute',
+                      right: theme.space[1],
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      pointerEvents: 'none',
+                      color: theme.colors.textMuted
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -438,6 +569,14 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
                   <span style={{ color: theme.colors.textMuted }}>•</span>
                   <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
                     {state.config.metadata.description}
+                  </span>
+                </>
+              )}
+              {state.availableConfigs.length > 1 && (
+                <>
+                  <span style={{ color: theme.colors.textMuted }}>•</span>
+                  <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
+                    {state.availableConfigs.length} configurations available
                   </span>
                 </>
               )}
