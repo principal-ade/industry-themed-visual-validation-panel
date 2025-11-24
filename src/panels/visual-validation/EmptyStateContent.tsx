@@ -8,7 +8,7 @@ interface EmptyStateContentProps {
 
 /**
  * Empty state component for Visual Validation Graph Panel
- * Displays when no vvf.config.yaml file is found in the project
+ * Displays when no .vgc/ folder with configuration files is found in the project
  */
 export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) => {
 
@@ -166,7 +166,7 @@ export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) =
                   fontSize: theme.fontSizes[0],
                   color: theme.colors.textSecondary
                 }}>
-                  Learn how to create vvf.config.yaml with path-based validation
+                  Learn how to create .vgc/ configurations with path-based validation
                 </div>
               </div>
               <ExternalLink size={16} color={theme.colors.textMuted} style={{ flexShrink: 0 }} />
@@ -231,8 +231,8 @@ export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) =
               borderRadius: theme.radii[0],
               fontFamily: theme.fonts.monospace,
               fontSize: theme.fontSizes[0]
-            }}>vvf.config.yaml</code> file to your project root,
-            the panel will automatically visualize your configuration.
+            }}>.vgc/</code> folder with YAML configuration files to your project root,
+            the panel will automatically visualize your configurations.
           </p>
         </div>
       </div>

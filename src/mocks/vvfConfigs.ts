@@ -167,22 +167,22 @@ export const mockComplexConfig: PathBasedGraphConfiguration = {
 export const mockSimpleConfigYAML = YAML.dump(mockSimpleConfig);
 export const mockComplexConfigYAML = YAML.dump(mockComplexConfig);
 
-// Mock file tree with config
+// Mock file tree with config using .vgc/ folder structure
 export const createMockFileTree = (config: 'simple' | 'complex' | 'none') => {
   const files: Array<{ path: string; relativePath: string; name: string; content?: string }> = [];
 
   if (config === 'simple') {
     files.push({
-      path: 'vvf.config.yaml',
-      relativePath: 'vvf.config.yaml',
-      name: 'vvf.config.yaml',
+      path: '.vgc/simple-service.yaml',
+      relativePath: '.vgc/simple-service.yaml',
+      name: 'simple-service.yaml',
       content: mockSimpleConfigYAML
     });
   } else if (config === 'complex') {
     files.push({
-      path: 'vvf.config.yaml',
-      relativePath: 'vvf.config.yaml',
-      name: 'vvf.config.yaml',
+      path: '.vgc/traffic-controller.yaml',
+      relativePath: '.vgc/traffic-controller.yaml',
+      name: 'traffic-controller.yaml',
       content: mockComplexConfigYAML
     });
   }
