@@ -1,5 +1,10 @@
 import { VisualValidationGraphPanel } from './panels/VisualValidationGraphPanel';
+import { EventControllerPanel } from './panels/EventControllerPanel';
 import type { PanelDefinition, PanelContextValue } from './types';
+
+// Re-export components for direct usage
+export { EventControllerPanel } from './panels/EventControllerPanel';
+export type { EventControllerPanelProps, PlaybackState, PlaybackStatus } from './panels/EventControllerPanel';
 
 /**
  * Export array of panel definitions.
