@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useState, useCallback } from 'react';
 import { ThemeProvider } from '@principal-ade/industry-theme';
 import { GraphRenderer } from '@principal-ai/visual-validation-react';

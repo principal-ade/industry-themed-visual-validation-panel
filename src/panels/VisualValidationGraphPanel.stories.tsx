@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { VisualValidationGraphPanel } from './VisualValidationGraphPanel';
 import { ThemeProvider } from '@principal-ade/industry-theme';
 import { MockPanelProvider } from '../mocks/panelContext';

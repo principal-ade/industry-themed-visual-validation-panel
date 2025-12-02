@@ -1,6 +1,7 @@
 import { VisualValidationGraphPanel } from './panels/VisualValidationGraphPanel';
 import { EventControllerPanel } from './panels/EventControllerPanel';
 import type { PanelDefinition, PanelContextValue } from './types';
+import { visualValidationPanelTools, visualValidationPanelToolsMetadata } from './tools';
 
 // Re-export components for direct usage
 export { EventControllerPanel } from './panels/EventControllerPanel';
@@ -20,6 +21,8 @@ export const panels: PanelDefinition[] = [
       author: 'Principal AI',
       description: 'Visualizes vvf.config.yaml configuration files as interactive graph diagrams',
       slices: ['fileTree'], // Data slices this panel depends on
+      // UTCP-compatible tools this panel exposes
+      tools: visualValidationPanelTools,
     },
     component: VisualValidationGraphPanel,
 
@@ -62,3 +65,15 @@ export const onPackageUnload = async () => {
   // eslint-disable-next-line no-console
   console.log('Panel package unloading - Visual Validation Graph Panel');
 };
+
+/**
+ * Export tools for server-safe imports.
+ * Use '@industry-theme/visual-validation-panel/tools' to import without React dependencies.
+ */
+export {
+  visualValidationPanelTools,
+  visualValidationPanelToolsMetadata,
+  focusNodeTool,
+  resetViewTool,
+  triggerEventTool,
+} from './tools';
