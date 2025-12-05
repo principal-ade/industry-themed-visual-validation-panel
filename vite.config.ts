@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import path from 'path';
 
 export default defineConfig(({ mode: _mode }) => ({
@@ -9,6 +10,8 @@ export default defineConfig(({ mode: _mode }) => ({
       jsxRuntime: 'automatic',
       jsxImportSource: 'react',
     }),
+    // Inline CSS into JS bundle - consumers don't need to import CSS separately
+    cssInjectedByJsPlugin(),
   ],
   define: {
     // Ensure NODE_ENV is production for React
@@ -35,8 +38,6 @@ export default defineConfig(({ mode: _mode }) => ({
           'react-dom': 'ReactDOM',
           'react/jsx-runtime': 'jsxRuntime',
         },
-        // Ensure CSS filename matches the JS bundle name
-        assetFileNames: 'panels.bundle[extname]',
       },
     },
     // Generate sourcemaps for debugging
