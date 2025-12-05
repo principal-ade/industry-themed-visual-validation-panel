@@ -6,12 +6,18 @@
   "main": "dist/panels.bundle.js",
   "module": "dist/panels.bundle.js",
   "types": "dist/index.d.ts",
+  "style": "dist/panels.bundle.css",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/panels.bundle.js",
       "require": "./dist/panels.bundle.js",
       "default": "./dist/panels.bundle.js"
+    },
+    "./styles.css": {
+      "import": "./dist/panels.bundle.css",
+      "require": "./dist/panels.bundle.css",
+      "default": "./dist/panels.bundle.css"
     },
     "./tools": {
       "types": "./dist/tools/index.d.ts",

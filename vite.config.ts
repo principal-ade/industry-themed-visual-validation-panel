@@ -35,6 +35,8 @@ export default defineConfig(({ mode: _mode }) => ({
           'react-dom': 'ReactDOM',
           'react/jsx-runtime': 'jsxRuntime',
         },
+        // Ensure CSS filename matches the JS bundle name
+        assetFileNames: 'panels.bundle[extname]',
       },
     },
     // Generate sourcemaps for debugging
