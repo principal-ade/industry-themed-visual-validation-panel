@@ -267,9 +267,17 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Get counts from canvas
-  const nodeCount = state.canvas?.nodes?.length ?? 0;
-  const edgeCount = state.canvas?.edges?.length ?? 0;
+  // Subscribe to config selection events from browser panel
+  useEffect(() => {
+    const unsubscribe = eventsRef.current.on('custom', (event) => {
+      const payload = event.payload as { action?: string; configId?: string } | undefined;
+      if (payload?.action === 'selectConfig' && payload?.configId) {
+        loadConfiguration(payload.configId);
+      }
+    });
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (state.loading) {
     return (
@@ -387,11 +395,6 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[3] }}>
-            {/* Node/Edge count */}
-            <div style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
-              {nodeCount} component{nodeCount !== 1 ? 's' : ''} • {edgeCount} connection{edgeCount !== 1 ? 's' : ''}
-            </div>
-
             {/* Edit Mode Controls */}
             <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[2] }}>
               {/* Save/Discard buttons */}
