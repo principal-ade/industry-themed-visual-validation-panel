@@ -23,6 +23,8 @@ import {
   Check,
   Network,
   ExternalLink,
+  HelpCircle,
+  X,
 } from 'lucide-react';
 import { PanelFileSystemAdapter, type FileTreeEntry } from '../adapters/PanelFileSystemAdapter';
 
@@ -81,6 +83,8 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
 
   // Copy command state for empty state
   const [copied, setCopied] = useState(false);
+  // Show setup info overlay (for when user wants to see empty state instructions again)
+  const [showSetupInfo, setShowSetupInfo] = useState(false);
   const initCommand = 'npx @principal-ai/visual-validation-cli init';
 
   // Refs for stable callbacks
@@ -629,6 +633,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
       fontFamily: theme.fonts.body,
       backgroundColor: theme.colors.background,
       overflow: 'hidden',
+      position: 'relative',
     }}>
       {/* Header */}
       <div style={{
@@ -648,25 +653,46 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
         }}>
           Browser
         </h2>
-        <button
-          onClick={() => loadData()}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '28px',
-            height: '28px',
-            backgroundColor: 'transparent',
-            color: theme.colors.textMuted,
-            border: 'none',
-            borderRadius: theme.radii[1],
-            cursor: 'pointer',
-            transition: 'color 0.2s',
-          }}
-          title="Refresh"
-        >
-          <RefreshCw size={16} />
-        </button>
+        <div style={{ display: 'flex', gap: theme.space[1] }}>
+          <button
+            onClick={() => setShowSetupInfo(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '28px',
+              height: '28px',
+              backgroundColor: 'transparent',
+              color: theme.colors.textMuted,
+              border: 'none',
+              borderRadius: theme.radii[1],
+              cursor: 'pointer',
+              transition: 'color 0.2s',
+            }}
+            title="Setup instructions"
+          >
+            <HelpCircle size={16} />
+          </button>
+          <button
+            onClick={() => loadData()}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '28px',
+              height: '28px',
+              backgroundColor: 'transparent',
+              color: theme.colors.textMuted,
+              border: 'none',
+              borderRadius: theme.radii[1],
+              cursor: 'pointer',
+              transition: 'color 0.2s',
+            }}
+            title="Refresh"
+          >
+            <RefreshCw size={16} />
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -949,6 +975,145 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
           </div>
         )}
       </div>
+
+      {/* Setup Info Overlay */}
+      {showSetupInfo && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: theme.colors.background,
+          display: 'flex',
+          flexDirection: 'column',
+          zIndex: 10,
+        }}>
+          {/* Overlay Header */}
+          <div style={{
+            padding: `${theme.space[3]}px ${theme.space[3]}px`,
+            borderBottom: `1px solid ${theme.colors.border}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexShrink: 0,
+          }}>
+            <h2 style={{
+              margin: 0,
+              fontSize: theme.fontSizes[3],
+              fontWeight: theme.fontWeights.medium,
+              color: theme.colors.text,
+            }}>
+              Setup
+            </h2>
+            <button
+              onClick={() => setShowSetupInfo(false)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '28px',
+                height: '28px',
+                backgroundColor: 'transparent',
+                color: theme.colors.textMuted,
+                border: 'none',
+                borderRadius: theme.radii[1],
+                cursor: 'pointer',
+                transition: 'color 0.2s',
+              }}
+              title="Close"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
+          {/* Overlay Content */}
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: theme.space[4],
+            color: theme.colors.textMuted,
+            textAlign: 'center',
+            overflow: 'auto',
+          }}>
+            <Network size={56} style={{ marginBottom: theme.space[3], opacity: 0.3 }} />
+            <span style={{ fontSize: theme.fontSizes[3], fontWeight: theme.fontWeights.medium, marginBottom: theme.space[2], color: theme.colors.text }}>
+              Visual Validation Setup
+            </span>
+            <span style={{ fontSize: theme.fontSizes[2], marginBottom: theme.space[3], maxWidth: '80%', lineHeight: 1.5 }}>
+              Initialize Visual Validation to create architecture diagrams that connect to your codebase.
+            </span>
+
+            {/* Copy command section */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: theme.space[2],
+              width: '90%',
+              maxWidth: '400px',
+            }}>
+              <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
+                Run this command to get started:
+              </span>
+              <button
+                onClick={handleCopyCommand}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: theme.space[2],
+                  padding: `${theme.space[2]}px ${theme.space[3]}px`,
+                  backgroundColor: theme.colors.backgroundSecondary,
+                  color: theme.colors.text,
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: theme.radii[2],
+                  cursor: 'pointer',
+                  fontFamily: theme.fonts.monospace,
+                  fontSize: theme.fontSizes[1],
+                  textAlign: 'left',
+                  transition: 'all 0.15s',
+                }}
+              >
+                <code style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {initCommand}
+                </code>
+                {copied ? (
+                  <Check size={16} style={{ color: theme.colors.success || '#22c55e', flexShrink: 0 }} />
+                ) : (
+                  <Copy size={16} style={{ color: theme.colors.textMuted, flexShrink: 0 }} />
+                )}
+              </button>
+              <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
+                This creates a .vgc/ folder with a starter canvas file.
+              </span>
+
+              {/* Learn more link */}
+              <a
+                href="https://www.npmjs.com/package/@principal-ai/visual-validation-cli"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: theme.space[1],
+                  marginTop: theme.space[2],
+                  fontSize: theme.fontSizes[1],
+                  color: theme.colors.primary,
+                  textDecoration: 'none',
+                  transition: 'opacity 0.15s',
+                }}
+              >
+                Learn more on npm
+                <ExternalLink size={14} />
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
