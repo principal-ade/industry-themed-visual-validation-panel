@@ -385,13 +385,302 @@ export const mockComplexCanvas: ExtendedCanvas = {
   },
 };
 
+/**
+ * Mock canvas demonstrating vv.fill and vv.stroke color properties
+ * This shows the new color system where each node can have distinct fill and stroke colors
+ */
+export const mockNodeColorsCanvas: ExtendedCanvas = {
+  nodes: [
+    {
+      id: 'pkg-core',
+      type: 'text',
+      x: 100,
+      y: 100,
+      width: 180,
+      height: 80,
+      text: '@app/core',
+      vv: {
+        nodeType: 'package',
+        shape: 'rectangle',
+        fill: '#3b82f6',
+        stroke: '#1d4ed8',
+        icon: 'Package',
+      },
+    },
+    {
+      id: 'pkg-api',
+      type: 'text',
+      x: 350,
+      y: 100,
+      width: 180,
+      height: 80,
+      text: '@app/api',
+      vv: {
+        nodeType: 'package',
+        shape: 'rectangle',
+        fill: '#8b5cf6',
+        stroke: '#6d28d9',
+        icon: 'Package',
+      },
+    },
+    {
+      id: 'component-button',
+      type: 'text',
+      x: 100,
+      y: 250,
+      width: 150,
+      height: 80,
+      text: 'Button',
+      vv: {
+        nodeType: 'component',
+        shape: 'rectangle',
+        fill: '#10b981',
+        stroke: '#047857',
+        icon: 'Component',
+      },
+    },
+    {
+      id: 'hook-auth',
+      type: 'text',
+      x: 300,
+      y: 250,
+      width: 150,
+      height: 80,
+      text: 'useAuth',
+      vv: {
+        nodeType: 'hook',
+        shape: 'circle',
+        fill: '#06b6d4',
+        stroke: '#0891b2',
+        icon: 'Anchor',
+      },
+    },
+    {
+      id: 'util-format',
+      type: 'text',
+      x: 500,
+      y: 250,
+      width: 150,
+      height: 80,
+      text: 'formatDate',
+      vv: {
+        nodeType: 'utility',
+        shape: 'diamond',
+        fill: '#f59e0b',
+        stroke: '#d97706',
+        icon: 'Wrench',
+      },
+    },
+    {
+      id: 'type-user',
+      type: 'text',
+      x: 200,
+      y: 400,
+      width: 150,
+      height: 80,
+      text: 'User',
+      vv: {
+        nodeType: 'type-def',
+        shape: 'hexagon',
+        fill: '#ec4899',
+        stroke: '#db2777',
+        icon: 'FileType',
+      },
+    },
+    {
+      id: 'ext-lodash',
+      type: 'text',
+      x: 400,
+      y: 400,
+      width: 150,
+      height: 80,
+      text: 'lodash',
+      vv: {
+        nodeType: 'external-dep',
+        shape: 'rectangle',
+        fill: '#6b7280',
+        stroke: '#4b5563',
+        icon: 'ExternalLink',
+      },
+    },
+  ],
+  edges: [
+    { id: 'edge-core-api', fromNode: 'pkg-core', toNode: 'pkg-api', vv: { edgeType: 'dependency' } },
+    { id: 'edge-core-button', fromNode: 'pkg-core', toNode: 'component-button', vv: { edgeType: 'exports' } },
+    { id: 'edge-api-auth', fromNode: 'pkg-api', toNode: 'hook-auth', vv: { edgeType: 'exports' } },
+    { id: 'edge-api-format', fromNode: 'pkg-api', toNode: 'util-format', vv: { edgeType: 'exports' } },
+    { id: 'edge-auth-user', fromNode: 'hook-auth', toNode: 'type-user', vv: { edgeType: 'uses-type' } },
+    { id: 'edge-format-lodash', fromNode: 'util-format', toNode: 'ext-lodash', vv: { edgeType: 'imports' } },
+  ],
+  vv: {
+    name: 'Code City - Node Colors Demo',
+    version: '1.0.0',
+    description: 'Demonstrates vv.fill and vv.stroke color properties for different node types',
+    edgeTypes: {
+      dependency: {
+        style: 'solid',
+        color: '#64748b',
+        width: 2,
+        directed: true,
+      },
+      exports: {
+        style: 'solid',
+        color: '#22c55e',
+        width: 2,
+        directed: true,
+      },
+      imports: {
+        style: 'dashed',
+        color: '#f59e0b',
+        width: 2,
+        directed: true,
+      },
+      'uses-type': {
+        style: 'dotted',
+        color: '#ec4899',
+        width: 1,
+        directed: true,
+      },
+    },
+  },
+};
+
+/**
+ * Mock canvas with mixed color sources for testing priority
+ * Tests: vv.fill > node.color > default
+ * Each node uses a unique nodeType to ensure independent color testing
+ */
+export const mockColorPriorityCanvas: ExtendedCanvas = {
+  nodes: [
+    {
+      id: 'node-vv-fill',
+      type: 'text',
+      x: 100,
+      y: 100,
+      width: 180,
+      height: 80,
+      text: 'vv.fill + vv.stroke',
+      color: '#ff0000', // This should be ignored because vv.fill is set
+      vv: {
+        nodeType: 'service-with-fill',
+        shape: 'rectangle',
+        fill: '#3b82f6', // Blue - should be used
+        stroke: '#1d4ed8', // Darker blue
+        icon: 'Server',
+      },
+    },
+    {
+      id: 'node-canvas-color',
+      type: 'text',
+      x: 350,
+      y: 100,
+      width: 180,
+      height: 80,
+      text: 'node.color only',
+      color: '#22c55e', // Green - should be used as fill
+      vv: {
+        nodeType: 'service-canvas-color',
+        shape: 'rectangle',
+        // No fill/stroke - uses node.color
+        icon: 'Server',
+      },
+    },
+    {
+      id: 'node-no-color',
+      type: 'text',
+      x: 600,
+      y: 100,
+      width: 180,
+      height: 80,
+      text: 'No color (gray)',
+      // No color property - should show default gray #888
+      vv: {
+        nodeType: 'service-no-color',
+        shape: 'rectangle',
+        // No fill/stroke - uses default gray
+        icon: 'Server',
+      },
+    },
+    {
+      id: 'node-stroke-only',
+      type: 'text',
+      x: 100,
+      y: 250,
+      width: 180,
+      height: 80,
+      text: 'vv.stroke only',
+      vv: {
+        nodeType: 'database',
+        shape: 'hexagon',
+        // No fill - stroke will be used for both
+        stroke: '#8b5cf6',
+        icon: 'Database',
+      },
+    },
+    {
+      id: 'node-shapes-circle',
+      type: 'text',
+      x: 350,
+      y: 250,
+      width: 100,
+      height: 100,
+      text: 'Circle',
+      vv: {
+        nodeType: 'endpoint',
+        shape: 'circle',
+        fill: '#06b6d4',
+        stroke: '#0891b2',
+        icon: 'Circle',
+      },
+    },
+    {
+      id: 'node-shapes-diamond',
+      type: 'text',
+      x: 520,
+      y: 250,
+      width: 100,
+      height: 100,
+      text: 'Diamond',
+      vv: {
+        nodeType: 'decision',
+        shape: 'diamond',
+        fill: '#f59e0b',
+        stroke: '#d97706',
+        icon: 'HelpCircle',
+      },
+    },
+  ],
+  edges: [
+    { id: 'e1', fromNode: 'node-vv-fill', toNode: 'node-canvas-color', vv: { edgeType: 'flow' } },
+    { id: 'e2', fromNode: 'node-canvas-color', toNode: 'node-no-color', vv: { edgeType: 'flow' } },
+    { id: 'e3', fromNode: 'node-vv-fill', toNode: 'node-stroke-only', vv: { edgeType: 'flow' } },
+    { id: 'e4', fromNode: 'node-stroke-only', toNode: 'node-shapes-circle', vv: { edgeType: 'flow' } },
+    { id: 'e5', fromNode: 'node-shapes-circle', toNode: 'node-shapes-diamond', vv: { edgeType: 'flow' } },
+  ],
+  vv: {
+    name: 'Color Priority Test',
+    version: '1.0.0',
+    description: 'Tests color priority: vv.fill > node.color > default',
+    edgeTypes: {
+      flow: {
+        style: 'solid',
+        color: '#64748b',
+        width: 2,
+        directed: true,
+      },
+    },
+  },
+};
+
 // Convert canvas to JSON strings for mock file content
 export const mockSimpleCanvasJSON = JSON.stringify(mockSimpleCanvas, null, 2);
 export const mockComplexCanvasJSON = JSON.stringify(mockComplexCanvas, null, 2);
 export const mockControlTowerCanvasJSON = JSON.stringify(mockControlTowerCanvas, null, 2);
+export const mockNodeColorsCanvasJSON = JSON.stringify(mockNodeColorsCanvas, null, 2);
+export const mockColorPriorityCanvasJSON = JSON.stringify(mockColorPriorityCanvas, null, 2);
 
 // Mock file tree with canvas files using .vgc/ folder structure
-export const createMockFileTree = (config: 'simple' | 'complex' | 'control-tower' | 'none') => {
+export const createMockFileTree = (config: 'simple' | 'complex' | 'control-tower' | 'node-colors' | 'color-priority' | 'none') => {
   const files: Array<{ path: string; relativePath: string; name: string; content?: string }> = [];
 
   if (config === 'simple') {
@@ -414,6 +703,20 @@ export const createMockFileTree = (config: 'simple' | 'complex' | 'control-tower
       relativePath: '.vgc/control-tower.canvas',
       name: 'control-tower.canvas',
       content: mockControlTowerCanvasJSON,
+    });
+  } else if (config === 'node-colors') {
+    files.push({
+      path: '.vgc/node-colors.canvas',
+      relativePath: '.vgc/node-colors.canvas',
+      name: 'node-colors.canvas',
+      content: mockNodeColorsCanvasJSON,
+    });
+  } else if (config === 'color-priority') {
+    files.push({
+      path: '.vgc/color-priority.canvas',
+      relativePath: '.vgc/color-priority.canvas',
+      name: 'color-priority.canvas',
+      content: mockColorPriorityCanvasJSON,
     });
   }
 

@@ -388,6 +388,103 @@ export const CustomRepository: Story = {
 };
 
 /**
+ * Node Colors Demo - demonstrates vv.fill and vv.stroke properties
+ * Shows how different node types can have distinct fill and stroke colors
+ */
+export const NodeColorsDemo: Story = {
+  args: {} as never,
+  render: () => {
+    const mockSlices = new Map<string, DataSlice>();
+    const fileTreeData = createMockFileTree('node-colors');
+    mockSlices.set('fileTree', {
+      scope: 'repository',
+      name: 'fileTree',
+      data: fileTreeData,
+      loading: false,
+      error: null,
+      refresh: async () => {},
+    });
+
+    return (
+      <MockPanelProvider
+        contextOverrides={{
+          slices: mockSlices,
+          getSlice: <T,>(name: string): DataSlice<T> | undefined => {
+            return mockSlices.get(name) as DataSlice<T> | undefined;
+          },
+          hasSlice: (name: string) => mockSlices.has(name),
+          isSliceLoading: (name: string) => mockSlices.get(name)?.loading || false,
+          repositoryPath: '/mock/repository',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any}
+        actionsOverrides={{
+          readFile: async (path: string) => {
+            const fileName = path.split('/').pop() || '';
+            const file = fileTreeData.allFiles.find((f) => f.path === fileName || f.name === fileName);
+            if (!file || !file.content) {
+              throw new Error(`File not found: ${path}`);
+            }
+            return { content: file.content };
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any}
+      >
+        {(props) => <VisualValidationGraphPanel {...props} />}
+      </MockPanelProvider>
+    );
+  },
+};
+
+/**
+ * Color Priority Test - demonstrates color source priority
+ * Shows how vv.fill takes priority over node.color
+ * Priority: vv.fill > node.color > default
+ */
+export const ColorPriorityTest: Story = {
+  args: {} as never,
+  render: () => {
+    const mockSlices = new Map<string, DataSlice>();
+    const fileTreeData = createMockFileTree('color-priority');
+    mockSlices.set('fileTree', {
+      scope: 'repository',
+      name: 'fileTree',
+      data: fileTreeData,
+      loading: false,
+      error: null,
+      refresh: async () => {},
+    });
+
+    return (
+      <MockPanelProvider
+        contextOverrides={{
+          slices: mockSlices,
+          getSlice: <T,>(name: string): DataSlice<T> | undefined => {
+            return mockSlices.get(name) as DataSlice<T> | undefined;
+          },
+          hasSlice: (name: string) => mockSlices.has(name),
+          isSliceLoading: (name: string) => mockSlices.get(name)?.loading || false,
+          repositoryPath: '/mock/repository',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any}
+        actionsOverrides={{
+          readFile: async (path: string) => {
+            const fileName = path.split('/').pop() || '';
+            const file = fileTreeData.allFiles.find((f) => f.path === fileName || f.name === fileName);
+            if (!file || !file.content) {
+              throw new Error(`File not found: ${path}`);
+            }
+            return { content: file.content };
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any}
+      >
+        {(props) => <VisualValidationGraphPanel {...props} />}
+      </MockPanelProvider>
+    );
+  },
+};
+
+/**
  * Empty project with workspace scope only
  */
 export const WorkspaceScope: Story = {
