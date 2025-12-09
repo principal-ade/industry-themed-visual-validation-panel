@@ -85,7 +85,6 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
   const [copied, setCopied] = useState(false);
   // Show setup info overlay (for when user wants to see empty state instructions again)
   const [showSetupInfo, setShowSetupInfo] = useState(false);
-  const initCommand = 'npx @principal-ai/visual-validation-cli init';
 
   // Refs for stable callbacks
   const contextRef = useRef(context);
@@ -286,13 +285,22 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
     setState(prev => ({ ...prev, libraryFilter: value }));
   }, []);
 
+  // CLI command changes based on whether user has configs
+  const hasConfigs = state.configs.length > 0;
+  const cliCommand = hasConfigs
+    ? 'npx @principal-ai/visual-validation-cli --help'
+    : 'npx @principal-ai/visual-validation-cli init';
+  const cliCommandDescription = hasConfigs
+    ? 'View all available CLI commands and options.'
+    : 'This creates a .vgc/ folder with a starter canvas file.';
+
   // Handle copy command for empty state
   const handleCopyCommand = useCallback(() => {
-    navigator.clipboard.writeText(initCommand).then(() => {
+    navigator.clipboard.writeText(cliCommand).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  }, [initCommand]);
+  }, [cliCommand]);
 
   // Handle config selection
   const handleConfigSelect = useCallback((config: ConfigItem) => {
@@ -591,7 +599,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
             }}
           >
             <code style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {initCommand}
+              {cliCommand}
             </code>
             {copied ? (
               <Check size={16} style={{ color: theme.colors.success || '#22c55e', flexShrink: 0 }} />
@@ -600,7 +608,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
             )}
           </button>
           <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
-            This creates a .vgc/ folder with a starter canvas file.
+            {cliCommandDescription}
           </span>
 
           {/* Learn more link */}
@@ -1101,7 +1109,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
                 }}
               >
                 <code style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {initCommand}
+                  {cliCommand}
                 </code>
                 {copied ? (
                   <Check size={16} style={{ color: theme.colors.success || '#22c55e', flexShrink: 0 }} />
@@ -1110,7 +1118,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
                 )}
               </button>
               <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
-                This creates a .vgc/ folder with a starter canvas file.
+                {cliCommandDescription}
               </span>
 
               {/* Learn more link */}
