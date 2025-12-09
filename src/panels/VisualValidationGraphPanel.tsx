@@ -10,6 +10,18 @@ import { applySugiyamaLayout } from './visual-validation/forceLayout';
 import { ErrorStateContent } from './visual-validation/ErrorStateContent';
 import { EmptyStateContent } from './visual-validation/EmptyStateContent';
 
+interface LayoutConfig {
+  direction: 'TB' | 'BT' | 'LR' | 'RL';
+  nodeSpacingX: number;
+  nodeSpacingY: number;
+}
+
+const DEFAULT_LAYOUT_CONFIG: LayoutConfig = {
+  direction: 'TB',
+  nodeSpacingX: 100,
+  nodeSpacingY: 100,
+};
+
 interface GraphPanelState {
   canvas: ExtendedCanvas | null;
   library: ComponentLibrary | null;
@@ -23,6 +35,9 @@ interface GraphPanelState {
   isSaving: boolean;
   // Incremented when layout changes to force GraphRenderer remount
   layoutVersion: number;
+  // Layout configuration
+  showLayoutConfig: boolean;
+  layoutConfig: LayoutConfig;
 }
 
 /**
@@ -51,7 +66,9 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
     isEditMode: false,
     hasUnsavedChanges: false,
     isSaving: false,
-    layoutVersion: 0
+    layoutVersion: 0,
+    showLayoutConfig: false,
+    layoutConfig: DEFAULT_LAYOUT_CONFIG,
   });
 
   // Store context and actions in refs to avoid recreation of callbacks
@@ -272,15 +289,28 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
     }
   }, [state.canvas, state.availableConfigs, loadConfiguration]);
 
+  // Toggle layout config panel visibility
+  const toggleLayoutConfig = useCallback(() => {
+    setState(prev => ({ ...prev, showLayoutConfig: !prev.showLayoutConfig }));
+  }, []);
+
+  // Update layout config
+  const updateLayoutConfig = useCallback((updates: Partial<LayoutConfig>) => {
+    setState(prev => ({
+      ...prev,
+      layoutConfig: { ...prev.layoutConfig, ...updates },
+    }));
+  }, []);
+
   // Apply auto-layout using Sugiyama (hierarchical) algorithm
   // Falls back to force-directed layout if graph has cycles
   const applyAutoLayout = useCallback(() => {
     if (!state.canvas) return;
 
     const layoutedCanvas = applySugiyamaLayout(state.canvas, {
-      direction: 'TB',
-      nodeSpacingX: 200,
-      nodeSpacingY: 150,
+      direction: state.layoutConfig.direction,
+      nodeSpacingX: state.layoutConfig.nodeSpacingX,
+      nodeSpacingY: state.layoutConfig.nodeSpacingY,
     });
 
     setState(prev => ({
@@ -290,7 +320,7 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
       hasUnsavedChanges: true,
       layoutVersion: prev.layoutVersion + 1,
     }));
-  }, [state.canvas]);
+  }, [state.canvas, state.layoutConfig]);
 
   // Load configuration on mount and when fileTree slice finishes loading
   const fileTreeLoading = context.hasSlice('fileTree') && context.isSliceLoading('fileTree');
@@ -395,88 +425,66 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
         backgroundColor: theme.colors.background,
         flexShrink: 0
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[3] }}>
-              <h2 style={{
-                margin: 0,
-                fontSize: theme.fontSizes[3],
-                fontWeight: theme.fontWeights.medium,
-                color: theme.colors.text
-              }}>
-                {state.canvas.vv?.name || 'Untitled'}
-              </h2>
-
-              {/* Config Selector */}
-              {state.availableConfigs.length > 1 && (
-                <div style={{ position: 'relative' }}>
-                  <select
-                    value={state.selectedConfigId || ''}
-                    onChange={(e) => loadConfiguration(e.target.value)}
-                    disabled={state.hasUnsavedChanges}
-                    style={{
-                      appearance: 'none',
-                      padding: `${theme.space[1]} ${theme.space[4]} ${theme.space[1]} ${theme.space[2]}`,
-                      fontSize: theme.fontSizes[1],
-                      fontFamily: theme.fonts.body,
-                      color: theme.colors.text,
-                      backgroundColor: theme.colors.backgroundSecondary,
-                      border: `1px solid ${theme.colors.border}`,
-                      borderRadius: theme.radii[1],
-                      cursor: state.hasUnsavedChanges ? 'not-allowed' : 'pointer',
-                      outline: 'none',
-                      opacity: state.hasUnsavedChanges ? 0.6 : 1,
-                      transition: 'all 0.2s'
-                    }}
-                    title={state.hasUnsavedChanges ? 'Save or discard changes before switching configs' : undefined}
-                  >
-                    {state.availableConfigs.map(config => (
-                      <option key={config.id} value={config.id}>{config.name}</option>
-                    ))}
-                  </select>
-                  <ChevronDown
-                    size={14}
-                    style={{
-                      position: 'absolute',
-                      right: theme.space[1],
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      pointerEvents: 'none',
-                      color: theme.colors.textMuted
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: theme.space[2],
-              marginTop: theme.space[1]
+        {/* Title Row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: theme.space[3] }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[3] }}>
+            <h2 style={{
+              margin: 0,
+              fontSize: theme.fontSizes[3],
+              fontWeight: theme.fontWeights.medium,
+              color: theme.colors.text
             }}>
-              {state.canvas.vv?.version && (
-                <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
-                  v{state.canvas.vv.version}
-                </span>
-              )}
-              {state.canvas.vv?.description && (
-                <>
-                  <span style={{ color: theme.colors.textMuted }}>•</span>
-                  <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
-                    {state.canvas.vv.description}
-                  </span>
-                </>
-              )}
-            </div>
+              {state.canvas.vv?.name || 'Untitled'}
+            </h2>
+
+            {/* Config Selector */}
+            {state.availableConfigs.length > 1 && (
+              <div style={{ position: 'relative' }}>
+                <select
+                  value={state.selectedConfigId || ''}
+                  onChange={(e) => loadConfiguration(e.target.value)}
+                  disabled={state.hasUnsavedChanges}
+                  style={{
+                    appearance: 'none',
+                    padding: `${theme.space[1]} ${theme.space[4]} ${theme.space[1]} ${theme.space[2]}`,
+                    fontSize: theme.fontSizes[1],
+                    fontFamily: theme.fonts.body,
+                    color: theme.colors.text,
+                    backgroundColor: theme.colors.backgroundSecondary,
+                    border: `1px solid ${theme.colors.border}`,
+                    borderRadius: theme.radii[1],
+                    cursor: state.hasUnsavedChanges ? 'not-allowed' : 'pointer',
+                    outline: 'none',
+                    opacity: state.hasUnsavedChanges ? 0.6 : 1,
+                    transition: 'all 0.2s'
+                  }}
+                  title={state.hasUnsavedChanges ? 'Save or discard changes before switching configs' : undefined}
+                >
+                  {state.availableConfigs.map(config => (
+                    <option key={config.id} value={config.id}>{config.name}</option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={14}
+                  style={{
+                    position: 'absolute',
+                    right: theme.space[1],
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    pointerEvents: 'none',
+                    color: theme.colors.textMuted
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[3] }}>
             {/* Auto Layout Button */}
             <button
-              onClick={applyAutoLayout}
+              onClick={toggleLayoutConfig}
               disabled={state.isSaving}
-              title="Auto-arrange nodes using force-directed layout"
+              title="Configure and apply auto-layout"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -484,9 +492,9 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
                 padding: `${theme.space[1]} ${theme.space[2]}`,
                 fontSize: theme.fontSizes[1],
                 fontFamily: theme.fonts.body,
-                color: theme.colors.text,
-                backgroundColor: theme.colors.backgroundSecondary,
-                border: `1px solid ${theme.colors.border}`,
+                color: state.showLayoutConfig ? 'white' : theme.colors.text,
+                backgroundColor: state.showLayoutConfig ? theme.colors.primary : theme.colors.backgroundSecondary,
+                border: `1px solid ${state.showLayoutConfig ? theme.colors.primary : theme.colors.border}`,
                 borderRadius: theme.radii[1],
                 cursor: 'pointer',
                 transition: 'all 0.2s'
@@ -496,76 +504,55 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
               <span>Auto Layout</span>
             </button>
 
-            {/* Edit Mode Controls */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[2] }}>
-              {/* Save/Discard buttons */}
-              {state.isEditMode && state.hasUnsavedChanges && (
-                <>
-                  <button
-                    onClick={saveAllChanges}
-                    disabled={state.isSaving}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: theme.space[1],
-                      padding: `${theme.space[1]} ${theme.space[2]}`,
-                      fontSize: theme.fontSizes[1],
-                      fontFamily: theme.fonts.body,
-                      color: 'white',
-                      backgroundColor: theme.colors.primary,
-                      border: 'none',
-                      borderRadius: theme.radii[1],
-                      cursor: state.isSaving ? 'wait' : 'pointer',
-                      opacity: state.isSaving ? 0.7 : 1,
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    {state.isSaving ? (
-                      <Loader size={14} style={{ animation: 'spin 1s linear infinite' }} />
-                    ) : (
-                      <Save size={14} />
-                    )}
-                    <span>Save</span>
-                  </button>
-                  <button
-                    onClick={discardChanges}
-                    disabled={state.isSaving}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: theme.space[1],
-                      padding: `${theme.space[1]} ${theme.space[2]}`,
-                      fontSize: theme.fontSizes[1],
-                      fontFamily: theme.fonts.body,
-                      color: theme.colors.text,
-                      backgroundColor: theme.colors.backgroundSecondary,
-                      border: `1px solid ${theme.colors.border}`,
-                      borderRadius: theme.radii[1],
-                      cursor: state.isSaving ? 'wait' : 'pointer',
-                      opacity: state.isSaving ? 0.7 : 1,
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    <X size={14} />
-                    <span>Discard</span>
-                  </button>
-                </>
-              )}
+            {/* Edit Mode Toggle */}
+            <button
+              onClick={toggleEditMode}
+              disabled={state.isSaving}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.space[1],
+                padding: `${theme.space[1]} ${theme.space[2]}`,
+                fontSize: theme.fontSizes[1],
+                fontFamily: theme.fonts.body,
+                color: state.isEditMode ? 'white' : theme.colors.text,
+                backgroundColor: state.isEditMode ? theme.colors.primary : theme.colors.backgroundSecondary,
+                border: `1px solid ${state.isEditMode ? theme.colors.primary : theme.colors.border}`,
+                borderRadius: theme.radii[1],
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
+              {state.isEditMode ? <Unlock size={14} /> : <Lock size={14} />}
+              <span>{state.isEditMode ? 'Editing' : 'Edit'}</span>
+            </button>
+          </div>
+        </div>
 
+        {/* Version/Description Row OR Save/Discard Controls */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: theme.space[2],
+          marginTop: theme.space[2]
+        }}>
+          {state.isEditMode && state.hasUnsavedChanges ? (
+            <>
               {/* Unsaved indicator */}
-              {state.isEditMode && state.hasUnsavedChanges && (
-                <span style={{
-                  fontSize: theme.fontSizes[0],
-                  color: theme.colors.warning || '#f59e0b',
-                  fontStyle: 'italic'
-                }}>
-                  Unsaved changes
-                </span>
-              )}
+              <span style={{
+                fontSize: theme.fontSizes[1],
+                color: theme.colors.warning || '#f59e0b',
+                fontStyle: 'italic'
+              }}>
+                Unsaved changes
+              </span>
 
-              {/* Edit Mode Toggle */}
+              {/* Spacer */}
+              <div style={{ flex: 1 }} />
+
+              {/* Save button */}
               <button
-                onClick={toggleEditMode}
+                onClick={saveAllChanges}
                 disabled={state.isSaving}
                 style={{
                   display: 'flex',
@@ -574,36 +561,217 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
                   padding: `${theme.space[1]} ${theme.space[2]}`,
                   fontSize: theme.fontSizes[1],
                   fontFamily: theme.fonts.body,
-                  color: state.isEditMode ? 'white' : theme.colors.text,
-                  backgroundColor: state.isEditMode ? theme.colors.primary : theme.colors.backgroundSecondary,
-                  border: `1px solid ${state.isEditMode ? theme.colors.primary : theme.colors.border}`,
+                  color: 'white',
+                  backgroundColor: theme.colors.primary,
+                  border: 'none',
                   borderRadius: theme.radii[1],
-                  cursor: 'pointer',
+                  cursor: state.isSaving ? 'wait' : 'pointer',
+                  opacity: state.isSaving ? 0.7 : 1,
                   transition: 'all 0.2s'
                 }}
               >
-                {state.isEditMode ? <Unlock size={14} /> : <Lock size={14} />}
-                <span>{state.isEditMode ? 'Editing' : 'Edit'}</span>
+                {state.isSaving ? (
+                  <Loader size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                ) : (
+                  <Save size={14} />
+                )}
+                <span>Save</span>
               </button>
-            </div>
-          </div>
+
+              {/* Discard button */}
+              <button
+                onClick={discardChanges}
+                disabled={state.isSaving}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: theme.space[1],
+                  padding: `${theme.space[1]} ${theme.space[2]}`,
+                  fontSize: theme.fontSizes[1],
+                  fontFamily: theme.fonts.body,
+                  color: theme.colors.text,
+                  backgroundColor: theme.colors.backgroundSecondary,
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: theme.radii[1],
+                  cursor: state.isSaving ? 'wait' : 'pointer',
+                  opacity: state.isSaving ? 0.7 : 1,
+                  transition: 'all 0.2s'
+                }}
+              >
+                <X size={14} />
+                <span>Discard</span>
+              </button>
+            </>
+          ) : (
+            <>
+              {state.canvas.vv?.version && (
+                <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
+                  v{state.canvas.vv.version}
+                </span>
+              )}
+              {state.canvas.vv?.description && (
+                <>
+                  {state.canvas.vv?.version && <span style={{ color: theme.colors.textMuted }}>•</span>}
+                  <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
+                    {state.canvas.vv.description}
+                  </span>
+                </>
+              )}
+            </>
+          )}
         </div>
       </div>
 
-      {/* Edit mode hint banner */}
-      {state.isEditMode && (
+      {/* Layout Configuration Row */}
+      {state.showLayoutConfig && (
         <div style={{
-          padding: `${theme.space[2]} ${theme.space[5]}`,
-          backgroundColor: theme.colors.primary + '10',
-          borderBottom: `1px solid ${theme.colors.primary}30`,
-          fontSize: theme.fontSizes[1],
-          color: theme.colors.primary,
+          padding: `${theme.space[3]}px 20px`,
+          backgroundColor: theme.colors.backgroundSecondary,
+          borderBottom: `1px solid ${theme.colors.border}`,
           display: 'flex',
           alignItems: 'center',
-          gap: theme.space[2]
+          gap: theme.space[4],
+          flexWrap: 'wrap'
         }}>
-          <span style={{ fontWeight: theme.fontWeights.medium }}>Edit Mode:</span>
-          <span>Drag nodes to reposition • Click nodes/edges to edit or delete • Drag from node handles to create connections</span>
+          {/* Direction */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[2] }}>
+            <label style={{
+              fontSize: theme.fontSizes[1],
+              color: theme.colors.textMuted,
+              fontWeight: theme.fontWeights.medium
+            }}>
+              Direction
+            </label>
+            <div style={{ display: 'flex', gap: theme.space[1] }}>
+              {(['TB', 'BT', 'LR', 'RL'] as const).map((dir) => (
+                <button
+                  key={dir}
+                  onClick={() => updateLayoutConfig({ direction: dir })}
+                  title={{
+                    TB: 'Top to Bottom',
+                    BT: 'Bottom to Top',
+                    LR: 'Left to Right',
+                    RL: 'Right to Left'
+                  }[dir]}
+                  style={{
+                    padding: `${theme.space[1]} ${theme.space[2]}`,
+                    fontSize: theme.fontSizes[0],
+                    fontFamily: theme.fonts.monospace,
+                    color: state.layoutConfig.direction === dir ? 'white' : theme.colors.text,
+                    backgroundColor: state.layoutConfig.direction === dir ? theme.colors.primary : theme.colors.background,
+                    border: `1px solid ${state.layoutConfig.direction === dir ? theme.colors.primary : theme.colors.border}`,
+                    borderRadius: theme.radii[1],
+                    cursor: 'pointer',
+                    transition: 'all 0.15s'
+                  }}
+                >
+                  {dir}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Horizontal Spacing */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[2] }}>
+            <label style={{
+              fontSize: theme.fontSizes[1],
+              color: theme.colors.textMuted,
+              fontWeight: theme.fontWeights.medium
+            }}>
+              H-Spacing
+            </label>
+            <input
+              type="range"
+              min="100"
+              max="400"
+              step="25"
+              value={state.layoutConfig.nodeSpacingX}
+              onChange={(e) => updateLayoutConfig({ nodeSpacingX: Number(e.target.value) })}
+              style={{ width: 80, cursor: 'pointer' }}
+            />
+            <span style={{
+              fontSize: theme.fontSizes[0],
+              color: theme.colors.textMuted,
+              fontFamily: theme.fonts.monospace,
+              minWidth: 32
+            }}>
+              {state.layoutConfig.nodeSpacingX}
+            </span>
+          </div>
+
+          {/* Vertical Spacing */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: theme.space[2] }}>
+            <label style={{
+              fontSize: theme.fontSizes[1],
+              color: theme.colors.textMuted,
+              fontWeight: theme.fontWeights.medium
+            }}>
+              V-Spacing
+            </label>
+            <input
+              type="range"
+              min="80"
+              max="300"
+              step="25"
+              value={state.layoutConfig.nodeSpacingY}
+              onChange={(e) => updateLayoutConfig({ nodeSpacingY: Number(e.target.value) })}
+              style={{ width: 80, cursor: 'pointer' }}
+            />
+            <span style={{
+              fontSize: theme.fontSizes[0],
+              color: theme.colors.textMuted,
+              fontFamily: theme.fonts.monospace,
+              minWidth: 32
+            }}>
+              {state.layoutConfig.nodeSpacingY}
+            </span>
+          </div>
+
+          {/* Spacer */}
+          <div style={{ flex: 1 }} />
+
+          {/* Apply Button */}
+          <button
+            onClick={applyAutoLayout}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: theme.space[1],
+              padding: `${theme.space[1]} ${theme.space[3]}`,
+              fontSize: theme.fontSizes[1],
+              fontFamily: theme.fonts.body,
+              color: 'white',
+              backgroundColor: theme.colors.primary,
+              border: 'none',
+              borderRadius: theme.radii[1],
+              cursor: 'pointer',
+              transition: 'all 0.15s'
+            }}
+          >
+            <LayoutGrid size={14} />
+            <span>Apply Layout</span>
+          </button>
+
+          {/* Close Button */}
+          <button
+            onClick={toggleLayoutConfig}
+            title="Close layout options"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: theme.space[1],
+              fontSize: theme.fontSizes[1],
+              color: theme.colors.textMuted,
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderRadius: theme.radii[1],
+              cursor: 'pointer',
+              transition: 'all 0.15s'
+            }}
+          >
+            <X size={16} />
+          </button>
         </div>
       )}
 
