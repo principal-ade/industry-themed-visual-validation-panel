@@ -191,10 +191,16 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
 
   // Save all pending changes
   const saveAllChanges = useCallback(async () => {
-    if (!state.canvas || !graphRef.current) return;
+    if (!state.canvas) return;
 
-    const pendingChanges = graphRef.current.getPendingChanges();
-    if (!pendingChanges.hasChanges) return;
+    // Get pending changes from GraphRenderer if available
+    const pendingChanges = graphRef.current?.getPendingChanges();
+
+    // If no pending changes from GraphRenderer but hasUnsavedChanges is true,
+    // this means the canvas was updated directly (e.g., via auto-layout).
+    // In that case, save state.canvas directly.
+    const hasGraphChanges = pendingChanges?.hasChanges ?? false;
+    if (!hasGraphChanges && !state.hasUnsavedChanges) return;
 
     setState(prev => ({ ...prev, isSaving: true }));
 
@@ -217,8 +223,11 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
         throw new Error('Selected config not found');
       }
 
-      // Apply changes to canvas
-      const updatedCanvas = applyChangesToCanvas(state.canvas, pendingChanges);
+      // Apply changes to canvas if there are pending changes from GraphRenderer,
+      // otherwise use state.canvas directly (already contains auto-layout changes)
+      const updatedCanvas = hasGraphChanges && pendingChanges
+        ? applyChangesToCanvas(state.canvas, pendingChanges)
+        : state.canvas;
 
       // Serialize to JSON
       const jsonContent = JSON.stringify(updatedCanvas, null, 2);
