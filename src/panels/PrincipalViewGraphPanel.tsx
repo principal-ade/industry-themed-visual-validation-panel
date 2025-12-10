@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { PanelComponentProps } from '@principal-ade/panel-framework-core';
 import { useTheme } from '@principal-ade/industry-theme';
-import { GraphRenderer } from '@principal-ai/visual-validation-react';
-import type { GraphRendererHandle, PendingChanges } from '@principal-ai/visual-validation-react';
-import type { ExtendedCanvas, ComponentLibrary } from '@principal-ai/visual-validation-core';
+import { GraphRenderer } from '@principal-ai/principal-view-react';
+import type { GraphRendererHandle, PendingChanges } from '@principal-ai/principal-view-react';
+import type { ExtendedCanvas, ComponentLibrary } from '@principal-ai/principal-view-core';
 import { Loader, ChevronDown, Save, X, Lock, Unlock, LayoutGrid } from 'lucide-react';
-import { ConfigLoader, type ConfigFile } from './visual-validation/ConfigLoader';
-import { applySugiyamaLayout } from './visual-validation/forceLayout';
-import { ErrorStateContent } from './visual-validation/ErrorStateContent';
-import { EmptyStateContent } from './visual-validation/EmptyStateContent';
+import { ConfigLoader, type ConfigFile } from './principal-view/ConfigLoader';
+import { applySugiyamaLayout } from './principal-view/forceLayout';
+import { ErrorStateContent } from './principal-view/ErrorStateContent';
+import { EmptyStateContent } from './principal-view/EmptyStateContent';
 
 interface LayoutConfig {
   direction: 'TB' | 'BT' | 'LR' | 'RL';
@@ -41,12 +41,12 @@ interface GraphPanelState {
 }
 
 /**
- * Visual Validation Graph Panel
+ * Principal View Graph Panel
  *
  * Visualizes .canvas configuration files as interactive graph diagrams
  * with full editing support for nodes, edges, and positions.
  */
-export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
+export const PrincipalViewGraphPanel: React.FC<PanelComponentProps> = ({
   context,
   actions,
   events
@@ -176,7 +176,7 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
           }
         } catch (libraryError) {
           // Library loading is optional, don't fail the whole operation
-          console.warn('[VisualValidation] Failed to load library.yaml:', libraryError);
+          console.warn('[PrincipalView] Failed to load library.yaml:', libraryError);
         }
       }
 
@@ -194,7 +194,7 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
       // Reset the GraphRenderer's edit state when we reload
       graphRef.current?.resetEditState();
     } catch (error) {
-      console.error('[VisualValidation] Error during config load:', error);
+      console.error('[PrincipalView] Error during config load:', error);
       setState(prev => ({
         ...prev,
         canvas: null,
@@ -280,7 +280,7 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
 
       setState(prev => ({ ...prev, isSaving: false, hasUnsavedChanges: false }));
     } catch (error) {
-      console.error('[VisualValidation] Error saving changes:', error);
+      console.error('[PrincipalView] Error saving changes:', error);
       setState(prev => ({
         ...prev,
         isSaving: false,
@@ -360,7 +360,7 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
 
     // Check if the data reference actually changed
     if (prevData !== fileTreeData && fileTreeData !== null) {
-      console.log('[VisualValidationGraph] File tree data changed, reloading...');
+      console.log('[PrincipalViewGraph] File tree data changed, reloading...');
       loadConfiguration();
     }
   }, [fileTreeData, fileTreeLoading, loadConfiguration]);
@@ -434,7 +434,7 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
               fontWeight: theme.fontWeights.medium,
               color: theme.colors.text
             }}>
-              {state.canvas.vv?.name || 'Untitled'}
+              {state.canvas.pv?.name || 'Untitled'}
             </h2>
 
             {/* Config Selector */}
@@ -604,16 +604,16 @@ export const VisualValidationGraphPanel: React.FC<PanelComponentProps> = ({
             </>
           ) : (
             <>
-              {state.canvas.vv?.version && (
+              {state.canvas.pv?.version && (
                 <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
-                  v{state.canvas.vv.version}
+                  v{state.canvas.pv.version}
                 </span>
               )}
-              {state.canvas.vv?.description && (
+              {state.canvas.pv?.description && (
                 <>
-                  {state.canvas.vv?.version && <span style={{ color: theme.colors.textMuted }}>•</span>}
+                  {state.canvas.pv?.version && <span style={{ color: theme.colors.textMuted }}>•</span>}
                   <span style={{ fontSize: theme.fontSizes[1], color: theme.colors.textMuted }}>
-                    {state.canvas.vv.description}
+                    {state.canvas.pv.description}
                   </span>
                 </>
               )}
@@ -829,8 +829,8 @@ function applyChangesToCanvas(
 
       // Handle data updates
       if (updates.data) {
-        if (updates.data.icon && node.vv) {
-          node.vv.icon = updates.data.icon as string;
+        if (updates.data.icon && node.pv) {
+          node.pv.icon = updates.data.icon as string;
         }
         if (updates.data.label !== undefined && 'text' in node) {
           (node as { text?: string }).text = updates.data.label as string;
@@ -864,7 +864,7 @@ function applyChangesToCanvas(
       toNode: to,
       fromSide: sourceHandle as 'top' | 'right' | 'bottom' | 'left' | undefined,
       toSide: targetHandle as 'top' | 'right' | 'bottom' | 'left' | undefined,
-      vv: { edgeType: type },
+      pv: { edgeType: type },
     });
   }
 
@@ -872,7 +872,7 @@ function applyChangesToCanvas(
   for (const { from, to, type } of changes.deletedEdges) {
     if (updatedCanvas.edges) {
       updatedCanvas.edges = updatedCanvas.edges.filter(
-        e => !(e.fromNode === from && e.toNode === to && e.vv?.edgeType === type)
+        e => !(e.fromNode === from && e.toNode === to && e.pv?.edgeType === type)
       );
     }
   }

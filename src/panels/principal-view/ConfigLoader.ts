@@ -1,4 +1,4 @@
-import type { ExtendedCanvas, ComponentLibrary } from '@principal-ai/visual-validation-core';
+import type { ExtendedCanvas, ComponentLibrary } from '@principal-ai/principal-view-core';
 import yaml from 'js-yaml';
 
 export interface ConfigFile {
@@ -27,7 +27,7 @@ function getConfigNameFromFilename(filename: string): string {
 }
 
 /**
- * Utility for loading and parsing .canvas configuration files from .vgc/ folder
+ * Utility for loading and parsing .canvas configuration files from .principal-views/ folder
  */
 export class ConfigLoader {
   /**
@@ -53,11 +53,11 @@ export class ConfigLoader {
   }
 
   /**
-   * Find the library.yaml file in the .vgc/ folder
+   * Find the library.yaml file in the .principal-views/ folder
    * Returns the relative path if found, null otherwise
    */
   static findLibraryPath(files: Array<{ path?: string; relativePath?: string; name?: string }>): string | null {
-    const VGC_FOLDER = '.vgc';
+    const VGC_FOLDER = '.principal-views';
 
     for (const file of files) {
       const filePath = file.relativePath || file.path || '';
@@ -73,18 +73,18 @@ export class ConfigLoader {
   }
 
   /**
-   * Find all .canvas files in the .vgc/ folder
+   * Find all .canvas files in the .principal-views/ folder
    * Returns array of config files with metadata
    */
   static findConfigs(files: Array<{ path?: string; relativePath?: string; name?: string }>): ConfigFile[] {
     const configs: ConfigFile[] = [];
-    const VGC_FOLDER = '.vgc';
+    const VGC_FOLDER = '.principal-views';
 
     for (const file of files) {
       const filePath = file.relativePath || file.path || '';
       const fileName = file.name || '';
 
-      // Check for .canvas files in .vgc/ folder
+      // Check for .canvas files in .principal-views/ folder
       if (filePath.startsWith(`${VGC_FOLDER}/`) && isCanvasFile(fileName)) {
         const configName = getConfigNameFromFilename(fileName);
 

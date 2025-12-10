@@ -4,7 +4,7 @@ import type {
   EventSession,
   SessionStatus,
   PathBasedEvent,
-} from '@principal-ai/visual-validation-core';
+} from '@principal-ai/principal-view-core';
 import {
   Circle,
   Square,
@@ -21,7 +21,7 @@ import {
   RefreshCw,
   Disc,
 } from 'lucide-react';
-import type { GraphEvent } from '@principal-ai/visual-validation-core';
+import type { GraphEvent } from '@principal-ai/principal-view-core';
 
 /**
  * Session summary for display

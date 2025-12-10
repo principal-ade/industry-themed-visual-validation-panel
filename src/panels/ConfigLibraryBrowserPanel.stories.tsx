@@ -109,27 +109,27 @@ connectionRules:
  */
 const mockSimpleCanvasJSON = JSON.stringify({
   nodes: [
-    { id: 'api', type: 'text', x: 100, y: 100, width: 120, height: 80, text: 'API', vv: { shape: 'rectangle', icon: 'Server' } },
-    { id: 'db', type: 'text', x: 300, y: 100, width: 120, height: 80, text: 'Database', vv: { shape: 'hexagon', icon: 'Database' } },
+    { id: 'api', type: 'text', x: 100, y: 100, width: 120, height: 80, text: 'API', pv: { shape: 'rectangle', icon: 'Server' } },
+    { id: 'db', type: 'text', x: 300, y: 100, width: 120, height: 80, text: 'Database', pv: { shape: 'hexagon', icon: 'Database' } },
   ],
-  edges: [{ id: 'e1', fromNode: 'api', toNode: 'db', vv: { edgeType: 'query' } }],
-  vv: { name: 'Simple Service', version: '1.0.0' },
+  edges: [{ id: 'e1', fromNode: 'api', toNode: 'db', pv: { edgeType: 'query' } }],
+  pv: { name: 'Simple Service', version: '1.0.0' },
 }, null, 2);
 
 const mockComplexCanvasJSON = JSON.stringify({
   nodes: [
-    { id: 'gateway', type: 'text', x: 100, y: 200, width: 140, height: 80, text: 'API Gateway', vv: { shape: 'rectangle', icon: 'Globe' } },
-    { id: 'auth', type: 'text', x: 300, y: 100, width: 120, height: 80, text: 'Auth Service', vv: { shape: 'rectangle', icon: 'Shield' } },
-    { id: 'users', type: 'text', x: 300, y: 300, width: 120, height: 80, text: 'Users Service', vv: { shape: 'rectangle', icon: 'Users' } },
-    { id: 'db', type: 'text', x: 500, y: 200, width: 120, height: 100, text: 'PostgreSQL', vv: { shape: 'hexagon', icon: 'Database' } },
+    { id: 'gateway', type: 'text', x: 100, y: 200, width: 140, height: 80, text: 'API Gateway', pv: { shape: 'rectangle', icon: 'Globe' } },
+    { id: 'auth', type: 'text', x: 300, y: 100, width: 120, height: 80, text: 'Auth Service', pv: { shape: 'rectangle', icon: 'Shield' } },
+    { id: 'users', type: 'text', x: 300, y: 300, width: 120, height: 80, text: 'Users Service', pv: { shape: 'rectangle', icon: 'Users' } },
+    { id: 'db', type: 'text', x: 500, y: 200, width: 120, height: 100, text: 'PostgreSQL', pv: { shape: 'hexagon', icon: 'Database' } },
   ],
   edges: [
-    { id: 'e1', fromNode: 'gateway', toNode: 'auth', vv: { edgeType: 'http' } },
-    { id: 'e2', fromNode: 'gateway', toNode: 'users', vv: { edgeType: 'http' } },
-    { id: 'e3', fromNode: 'auth', toNode: 'db', vv: { edgeType: 'query' } },
-    { id: 'e4', fromNode: 'users', toNode: 'db', vv: { edgeType: 'query' } },
+    { id: 'e1', fromNode: 'gateway', toNode: 'auth', pv: { edgeType: 'http' } },
+    { id: 'e2', fromNode: 'gateway', toNode: 'users', pv: { edgeType: 'http' } },
+    { id: 'e3', fromNode: 'auth', toNode: 'db', pv: { edgeType: 'query' } },
+    { id: 'e4', fromNode: 'users', toNode: 'db', pv: { edgeType: 'query' } },
   ],
-  vv: { name: 'Microservices Architecture', version: '2.0.0', description: 'Multi-service setup with shared database' },
+  pv: { name: 'Microservices Architecture', version: '2.0.0', description: 'Multi-service setup with shared database' },
 }, null, 2);
 
 /**
@@ -138,20 +138,20 @@ const mockComplexCanvasJSON = JSON.stringify({
 const createMockFileTreeWithLibrary = () => {
   const files = [
     {
-      path: '.vgc/simple-service.canvas',
-      relativePath: '.vgc/simple-service.canvas',
+      path: '.principal-views/simple-service.canvas',
+      relativePath: '.principal-views/simple-service.canvas',
       name: 'simple-service.canvas',
       content: mockSimpleCanvasJSON,
     },
     {
-      path: '.vgc/microservices.canvas',
-      relativePath: '.vgc/microservices.canvas',
+      path: '.principal-views/microservices.canvas',
+      relativePath: '.principal-views/microservices.canvas',
       name: 'microservices.canvas',
       content: mockComplexCanvasJSON,
     },
     {
-      path: '.vgc/library.yaml',
-      relativePath: '.vgc/library.yaml',
+      path: '.principal-views/library.yaml',
+      relativePath: '.principal-views/library.yaml',
       name: 'library.yaml',
       content: mockLibraryYaml,
     },
@@ -165,7 +165,7 @@ const createMockFileTreeWithLibrary = () => {
 
 /**
  * ConfigLibraryBrowserPanel displays available .canvas configurations
- * and component library items from the .vgc/ folder.
+ * and component library items from the .principal-views/ folder.
  */
 const meta = {
   title: 'Panels/ConfigLibraryBrowserPanel',
@@ -254,14 +254,14 @@ export const ConfigsOnly: Story = {
     const fileTreeData = {
       allFiles: [
         {
-          path: '.vgc/simple-service.canvas',
-          relativePath: '.vgc/simple-service.canvas',
+          path: '.principal-views/simple-service.canvas',
+          relativePath: '.principal-views/simple-service.canvas',
           name: 'simple-service.canvas',
           content: mockSimpleCanvasJSON,
         },
         {
-          path: '.vgc/microservices.canvas',
-          relativePath: '.vgc/microservices.canvas',
+          path: '.principal-views/microservices.canvas',
+          relativePath: '.principal-views/microservices.canvas',
           name: 'microservices.canvas',
           content: mockComplexCanvasJSON,
         },
@@ -307,7 +307,7 @@ export const ConfigsOnly: Story = {
 };
 
 /**
- * Empty state - no .vgc folder
+ * Empty state - no .principal-views folder
  */
 export const EmptyState: Story = {
   args: {} as never,

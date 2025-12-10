@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useState, useCallback } from 'react';
 import { ThemeProvider } from '@principal-ade/industry-theme';
-import { GraphRenderer } from '@principal-ai/visual-validation-react';
-import type { ExtendedCanvas, GraphEvent } from '@principal-ai/visual-validation-core';
+import { GraphRenderer } from '@principal-ai/principal-view-react';
+import type { ExtendedCanvas, GraphEvent } from '@principal-ai/principal-view-core';
 import { EventControllerPanel } from './EventControllerPanel';
 
 /**
@@ -49,7 +49,7 @@ const sampleCanvas: ExtendedCanvas = {
       height: 80,
       text: 'Client A',
       color: '#3b82f6',
-      vv: {
+      pv: {
         nodeType: 'client',
         shape: 'circle',
         icon: 'Monitor',
@@ -69,7 +69,7 @@ const sampleCanvas: ExtendedCanvas = {
       height: 80,
       text: 'Server',
       color: '#8b5cf6',
-      vv: {
+      pv: {
         nodeType: 'server',
         shape: 'rectangle',
         icon: 'Server',
@@ -90,7 +90,7 @@ const sampleCanvas: ExtendedCanvas = {
       height: 100,
       text: 'Database',
       color: '#10b981',
-      vv: {
+      pv: {
         nodeType: 'database',
         shape: 'hexagon',
         icon: 'Database',
@@ -102,16 +102,16 @@ const sampleCanvas: ExtendedCanvas = {
       id: 'edge-client-server',
       fromNode: 'client-1',
       toNode: 'server-1',
-      vv: { edgeType: 'websocket' },
+      pv: { edgeType: 'websocket' },
     },
     {
       id: 'edge-server-db',
       fromNode: 'server-1',
       toNode: 'database-1',
-      vv: { edgeType: 'query' },
+      pv: { edgeType: 'query' },
     },
   ],
-  vv: {
+  pv: {
     name: 'Event Playback Demo',
     version: '1.0.0',
     description: 'Demonstrates event playback between panels',

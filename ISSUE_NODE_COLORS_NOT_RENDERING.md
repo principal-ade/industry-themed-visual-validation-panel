@@ -49,12 +49,12 @@ We have defined distinct colors for different node types to make the architectur
 ## Files Involved
 
 ### Canvas File (validated and correct)
-- Path: `.vgc/architecture.canvas`
+- Path: `.principal-views/architecture.canvas`
 - Contains 20 nodes with explicit `fill` and `stroke` in `vv` extension
-- Passes `npx @principal-ai/visual-validation-cli validate`
+- Passes `npx @principal-ai/principal-view-cli validate`
 
 ### Library File (defines component styles)
-- Path: `.vgc/library.yaml`
+- Path: `.principal-views/library.yaml`
 - Defines `nodeComponents` with `style.fill` and `style.stroke` for each node type
 
 ## Example Canvas Structure
@@ -103,15 +103,15 @@ We have defined distinct colors for different node types to make the architectur
 
 ## Reproduction Steps
 
-1. Open a project with `.vgc/architecture.canvas` containing nodes with `vv.fill` and `vv.stroke`
+1. Open a project with `.principal-views/architecture.canvas` containing nodes with `vv.fill` and `vv.stroke`
 2. View the canvas in the Visual Validation Graph Panel
 3. Observe that all nodes have the same color regardless of their defined colors
 
 ## Environment
 
-- `@principal-ai/visual-validation-cli`: latest (just updated)
-- `@principal-ai/visual-validation-react`: (GraphRenderer component)
-- `@principal-ai/visual-validation-core`: (ExtendedCanvas types)
+- `@principal-ai/principal-view-cli`: latest (just updated)
+- `@principal-ai/principal-view-react`: (GraphRenderer component)
+- `@principal-ai/principal-view-core`: (ExtendedCanvas types)
 
 ## Related
 

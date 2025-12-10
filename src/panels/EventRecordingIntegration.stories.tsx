@@ -7,13 +7,13 @@ import {
   SessionManager,
   EventRecorderService,
   PathBasedEventProcessor,
-} from '@principal-ai/visual-validation-core';
+} from '@principal-ai/principal-view-core';
 import type {
   EventSession,
   GraphEvent,
   PathBasedGraphConfiguration,
   PathBasedEvent,
-} from '@principal-ai/visual-validation-core';
+} from '@principal-ai/principal-view-core';
 
 /**
  * Sample graph configuration for testing

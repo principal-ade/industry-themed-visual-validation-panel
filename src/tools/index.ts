@@ -1,7 +1,7 @@
 /**
  * Panel Tools
  *
- * UTCP-compatible tools for the Visual Validation panel extension.
+ * UTCP-compatible tools for the Principal View panel extension.
  * These tools can be invoked by AI agents and emit events that panels listen for.
  *
  * IMPORTANT: This file should NOT import any React components to ensure
@@ -41,7 +41,7 @@ export const focusNodeTool: PanelTool = {
   tags: ['graph', 'navigation', 'focus'],
   tool_call_template: {
     call_template_type: 'panel_event',
-    event_type: 'industry-theme.visual-validation-panel:focus-node',
+    event_type: 'industry-theme.principal-view-panels:focus-node',
   },
 };
 
@@ -69,7 +69,7 @@ export const resetViewTool: PanelTool = {
   tags: ['graph', 'navigation', 'reset'],
   tool_call_template: {
     call_template_type: 'panel_event',
-    event_type: 'industry-theme.visual-validation-panel:reset-view',
+    event_type: 'industry-theme.principal-view-panels:reset-view',
   },
 };
 
@@ -111,14 +111,14 @@ export const triggerEventTool: PanelTool = {
   tags: ['graph', 'event', 'animation'],
   tool_call_template: {
     call_template_type: 'panel_event',
-    event_type: 'industry-theme.visual-validation-panel:trigger-event',
+    event_type: 'industry-theme.principal-view-panels:trigger-event',
   },
 };
 
 /**
  * All tools exported as an array.
  */
-export const visualValidationPanelTools: PanelTool[] = [
+export const principalViewPanelTools: PanelTool[] = [
   focusNodeTool,
   resetViewTool,
   triggerEventTool,
@@ -127,9 +127,9 @@ export const visualValidationPanelTools: PanelTool[] = [
 /**
  * Panel tools metadata for registration with PanelToolRegistry.
  */
-export const visualValidationPanelToolsMetadata: PanelToolsMetadata = {
-  id: 'industry-theme.visual-validation-panel',
-  name: 'Visual Validation Panel',
-  description: 'Tools provided by the visual validation graph panel extension',
-  tools: visualValidationPanelTools,
+export const principalViewPanelToolsMetadata: PanelToolsMetadata = {
+  id: 'industry-theme.principal-view-panels',
+  name: 'Principal View Panels',
+  description: 'Tools provided by the principal view graph panel extension',
+  tools: principalViewPanelTools,
 };

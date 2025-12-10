@@ -1,7 +1,7 @@
 {
-  "name": "@industry-theme/visual-validation-panel",
-  "version": "0.3.17",
-  "description": "Visual Validation Graph Panel for visualizing graph configurations from .vgc/ folder as interactive diagrams",
+  "name": "@industry-theme/principal-view-panels",
+  "version": "0.1.1",
+  "description": "Principal View Graph Panels for visualizing graph configurations from .principal-views/ folder as interactive diagrams",
   "type": "module",
   "main": "dist/panels.bundle.js",
   "module": "dist/panels.bundle.js",
@@ -22,7 +22,7 @@
   },
   "keywords": [
     "panel-extension",
-    "visual-validation",
+    "principal-view",
     "graph",
     "panel"
   ],
@@ -59,8 +59,8 @@
     "@principal-ade/panel-framework-core": "^0.1.10",
     "@principal-ade/utcp-panel-event": "^0.1.0",
     "@principal-ai/repository-abstraction": "0.2.5",
-    "@principal-ai/visual-validation-core": "0.5.3",
-    "@principal-ai/visual-validation-react": "0.6.6",
+    "@principal-ai/principal-view-core": "0.5.7",
+    "@principal-ai/principal-view-react": "0.6.7",
     "@xyflow/react": "^12.0.0",
     "clsx": "^2.1.1",
     "d3-dag": "^1.1.0",
@@ -108,5 +108,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/your-org/panel-starter.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

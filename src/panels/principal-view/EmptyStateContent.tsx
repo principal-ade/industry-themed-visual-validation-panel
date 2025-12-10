@@ -7,8 +7,8 @@ interface EmptyStateContentProps {
 }
 
 /**
- * Empty state component for Visual Validation Graph Panel
- * Displays when no .vgc/ folder with configuration files is found in the project
+ * Empty state component for Principal View Graph Panel
+ * Displays when no .principal-views/ folder with configuration files is found in the project
  */
 export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) => {
 
@@ -45,7 +45,7 @@ export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) =
           fontWeight: theme.fontWeights.bold,
           color: theme.colors.text
         }}>
-          Visual Validation Graph Panel
+          Principal View Graph Panel
         </h2>
 
         <p style={{
@@ -128,7 +128,7 @@ export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) =
             gap: theme.space[2]
           }}>
             <a
-              href="https://github.com/principal-ai/visual-validation-core-library/blob/main/docs/CONFIGURATION_REFERENCE.md"
+              href="https://github.com/principal-ai/principal-view-core-library/blob/main/docs/CONFIGURATION_REFERENCE.md"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -166,14 +166,14 @@ export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) =
                   fontSize: theme.fontSizes[0],
                   color: theme.colors.textSecondary
                 }}>
-                  Learn how to create .vgc/ configurations with path-based validation
+                  Learn how to create .principal-views/ configurations with path-based validation
                 </div>
               </div>
               <ExternalLink size={16} color={theme.colors.textMuted} style={{ flexShrink: 0 }} />
             </a>
 
             <a
-              href="https://www.npmjs.com/package/@principal-ai/visual-validation-core"
+              href="https://www.npmjs.com/package/@principal-ai/principal-view-core"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -211,7 +211,7 @@ export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) =
                   fontSize: theme.fontSizes[0],
                   color: theme.colors.textSecondary
                 }}>
-                  View @principal-ai/visual-validation-core on npm
+                  View @principal-ai/principal-view-core on npm
                 </div>
               </div>
               <ExternalLink size={16} color={theme.colors.textMuted} style={{ flexShrink: 0 }} />
@@ -231,7 +231,7 @@ export const EmptyStateContent: React.FC<EmptyStateContentProps> = ({ theme }) =
               borderRadius: theme.radii[0],
               fontFamily: theme.fonts.monospace,
               fontSize: theme.fontSizes[0]
-            }}>.vgc/</code> folder with YAML configuration files to your project root,
+            }}>.principal-views/</code> folder with YAML configuration files to your project root,
             the panel will automatically visualize your configurations.
           </p>
         </div>

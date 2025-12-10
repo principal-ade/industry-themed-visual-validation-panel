@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { VisualValidationGraphPanel } from './VisualValidationGraphPanel';
+import { PrincipalViewGraphPanel } from './PrincipalViewGraphPanel';
 import { ThemeProvider } from '@principal-ade/industry-theme';
 import { MockPanelProvider } from '../mocks/panelContext';
 import { createMockFileTree } from '../mocks/vvfConfigs';
 import type { DataSlice } from '../types';
 
 /**
- * VisualValidationGraphPanel visualizes .canvas files as interactive graphs.
+ * PrincipalViewGraphPanel visualizes .canvas files as interactive graphs.
  * It demonstrates graph rendering with ReactFlow and ExtendedCanvas format.
  */
 const meta = {
-  title: 'Panels/VisualValidationGraphPanel',
-  component: VisualValidationGraphPanel,
+  title: 'Panels/PrincipalViewGraphPanel',
+  component: PrincipalViewGraphPanel,
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -31,7 +31,7 @@ const meta = {
       </ThemeProvider>
     ),
   ],
-} satisfies Meta<typeof VisualValidationGraphPanel>;
+} satisfies Meta<typeof PrincipalViewGraphPanel>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -78,7 +78,7 @@ export const SimpleConfiguration: Story = {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -126,7 +126,7 @@ export const ComplexConfiguration: Story = {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -174,7 +174,7 @@ export const ControlTowerConfiguration: Story = {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -207,7 +207,7 @@ export const Loading: Story = {
           isSliceLoading: (name: string) => mockSlices.get(name)?.loading || false,
         }}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -241,7 +241,7 @@ export const EmptyState: Story = {
           isSliceLoading: (name: string) => mockSlices.get(name)?.loading || false,
         }}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -257,8 +257,8 @@ export const InvalidJSON: Story = {
     const fileTreeData = {
       allFiles: [
         {
-          path: '.vgc/invalid.canvas',
-          relativePath: '.vgc/invalid.canvas',
+          path: '.principal-views/invalid.canvas',
+          relativePath: '.principal-views/invalid.canvas',
           name: 'invalid.canvas',
           content: '{ invalid json content',
         },
@@ -299,7 +299,7 @@ export const InvalidJSON: Story = {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -321,7 +321,7 @@ export const NoFileTreeSlice: Story = {
           hasSlice: (name) => name !== 'fileTree',
         }}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -381,14 +381,14 @@ export const CustomRepository: Story = {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
 };
 
 /**
- * Node Colors Demo - demonstrates vv.fill and vv.stroke properties
+ * Node Colors Demo - demonstrates pv.fill and pv.stroke properties
  * Shows how different node types can have distinct fill and stroke colors
  */
 export const NodeColorsDemo: Story = {
@@ -429,7 +429,7 @@ export const NodeColorsDemo: Story = {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -437,8 +437,8 @@ export const NodeColorsDemo: Story = {
 
 /**
  * Color Priority Test - demonstrates color source priority
- * Shows how vv.fill takes priority over node.color
- * Priority: vv.fill > node.color > default
+ * Shows how pv.fill takes priority over node.color
+ * Priority: pv.fill > node.color > default
  */
 export const ColorPriorityTest: Story = {
   args: {} as never,
@@ -478,7 +478,7 @@ export const ColorPriorityTest: Story = {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },
@@ -532,7 +532,7 @@ export const WorkspaceScope: Story = {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any}
       >
-        {(props) => <VisualValidationGraphPanel {...props} />}
+        {(props) => <PrincipalViewGraphPanel {...props} />}
       </MockPanelProvider>
     );
   },

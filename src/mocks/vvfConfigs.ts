@@ -1,4 +1,4 @@
-import type { ExtendedCanvas } from '@principal-ai/visual-validation-core';
+import type { ExtendedCanvas } from '@principal-ai/principal-view-core';
 
 /**
  * Mock canvas configurations for Storybook stories
@@ -15,7 +15,7 @@ export const mockSimpleCanvas: ExtendedCanvas = {
       height: 80,
       text: 'API Handler',
       color: '#3b82f6',
-      vv: {
+      pv: {
         nodeType: 'api-handler',
         shape: 'rectangle',
         icon: 'Server',
@@ -31,7 +31,7 @@ export const mockSimpleCanvas: ExtendedCanvas = {
       height: 100,
       text: 'Database',
       color: '#8b5cf6',
-      vv: {
+      pv: {
         nodeType: 'database',
         shape: 'hexagon',
         icon: 'Database',
@@ -47,7 +47,7 @@ export const mockSimpleCanvas: ExtendedCanvas = {
       height: 100,
       text: 'Logger',
       color: '#06b6d4',
-      vv: {
+      pv: {
         nodeType: 'logger',
         shape: 'circle',
         icon: 'FileText',
@@ -60,22 +60,22 @@ export const mockSimpleCanvas: ExtendedCanvas = {
       id: 'edge-api-db',
       fromNode: 'api-handler',
       toNode: 'database',
-      vv: { edgeType: 'query' },
+      pv: { edgeType: 'query' },
     },
     {
       id: 'edge-api-logger',
       fromNode: 'api-handler',
       toNode: 'logger',
-      vv: { edgeType: 'log' },
+      pv: { edgeType: 'log' },
     },
     {
       id: 'edge-db-logger',
       fromNode: 'database',
       toNode: 'logger',
-      vv: { edgeType: 'log' },
+      pv: { edgeType: 'log' },
     },
   ],
-  vv: {
+  pv: {
     name: 'Simple Service',
     version: '1.0.0',
     description: 'Basic service with API and database',
@@ -107,7 +107,7 @@ export const mockControlTowerCanvas: ExtendedCanvas = {
       height: 120,
       text: 'Server',
       color: '#8b5cf6',
-      vv: {
+      pv: {
         nodeType: 'server',
         shape: 'rectangle',
         icon: 'Server',
@@ -123,7 +123,7 @@ export const mockControlTowerCanvas: ExtendedCanvas = {
       height: 120,
       text: 'Client A',
       color: '#3b82f6',
-      vv: {
+      pv: {
         nodeType: 'client',
         shape: 'circle',
         icon: 'User',
@@ -139,7 +139,7 @@ export const mockControlTowerCanvas: ExtendedCanvas = {
       height: 140,
       text: 'Transport',
       color: '#06b6d4',
-      vv: {
+      pv: {
         nodeType: 'transport',
         shape: 'diamond',
         icon: 'Radio',
@@ -155,7 +155,7 @@ export const mockControlTowerCanvas: ExtendedCanvas = {
       height: 130,
       text: 'Room Manager',
       color: '#22c55e',
-      vv: {
+      pv: {
         nodeType: 'room-manager',
         shape: 'hexagon',
         icon: 'Users',
@@ -171,7 +171,7 @@ export const mockControlTowerCanvas: ExtendedCanvas = {
       height: 130,
       text: 'Lock Manager',
       color: '#f59e0b',
-      vv: {
+      pv: {
         nodeType: 'lock-manager',
         shape: 'hexagon',
         icon: 'Lock',
@@ -187,7 +187,7 @@ export const mockControlTowerCanvas: ExtendedCanvas = {
       height: 130,
       text: 'Presence Manager',
       color: '#ec4899',
-      vv: {
+      pv: {
         nodeType: 'presence-manager',
         shape: 'hexagon',
         icon: 'Activity',
@@ -203,7 +203,7 @@ export const mockControlTowerCanvas: ExtendedCanvas = {
       height: 90,
       text: 'Auth',
       color: '#ef4444',
-      vv: {
+      pv: {
         nodeType: 'auth',
         shape: 'rectangle',
         icon: 'Shield',
@@ -212,17 +212,17 @@ export const mockControlTowerCanvas: ExtendedCanvas = {
     },
   ],
   edges: [
-    { id: 'edge-client-transport', fromNode: 'client-a', toNode: 'transport', vv: { edgeType: 'websocket-connection' } },
-    { id: 'edge-transport-server', fromNode: 'transport', toNode: 'server', vv: { edgeType: 'websocket-connection' } },
-    { id: 'edge-server-auth', fromNode: 'server', toNode: 'auth', vv: { edgeType: 'auth-flow' } },
-    { id: 'edge-server-room', fromNode: 'server', toNode: 'room-manager', vv: { edgeType: 'service-call' } },
-    { id: 'edge-server-lock', fromNode: 'server', toNode: 'lock-manager', vv: { edgeType: 'service-call' } },
-    { id: 'edge-server-presence', fromNode: 'server', toNode: 'presence-manager', vv: { edgeType: 'service-call' } },
-    { id: 'edge-client-room', fromNode: 'client-a', toNode: 'room-manager', vv: { edgeType: 'room-flow' } },
-    { id: 'edge-client-lock', fromNode: 'client-a', toNode: 'lock-manager', vv: { edgeType: 'lock-flow' } },
-    { id: 'edge-client-presence', fromNode: 'client-a', toNode: 'presence-manager', vv: { edgeType: 'presence-flow' } },
+    { id: 'edge-client-transport', fromNode: 'client-a', toNode: 'transport', pv: { edgeType: 'websocket-connection' } },
+    { id: 'edge-transport-server', fromNode: 'transport', toNode: 'server', pv: { edgeType: 'websocket-connection' } },
+    { id: 'edge-server-auth', fromNode: 'server', toNode: 'auth', pv: { edgeType: 'auth-flow' } },
+    { id: 'edge-server-room', fromNode: 'server', toNode: 'room-manager', pv: { edgeType: 'service-call' } },
+    { id: 'edge-server-lock', fromNode: 'server', toNode: 'lock-manager', pv: { edgeType: 'service-call' } },
+    { id: 'edge-server-presence', fromNode: 'server', toNode: 'presence-manager', pv: { edgeType: 'service-call' } },
+    { id: 'edge-client-room', fromNode: 'client-a', toNode: 'room-manager', pv: { edgeType: 'room-flow' } },
+    { id: 'edge-client-lock', fromNode: 'client-a', toNode: 'lock-manager', pv: { edgeType: 'lock-flow' } },
+    { id: 'edge-client-presence', fromNode: 'client-a', toNode: 'presence-manager', pv: { edgeType: 'presence-flow' } },
   ],
-  vv: {
+  pv: {
     name: 'Control Tower Core - Client-Server Demo',
     version: '0.1.19',
     description: 'Alpha testing: Server with two client connections',
@@ -283,7 +283,7 @@ export const mockComplexCanvas: ExtendedCanvas = {
       height: 80,
       text: 'Request Handler',
       color: '#3b82f6',
-      vv: {
+      pv: {
         nodeType: 'request-handler',
         shape: 'rectangle',
         icon: 'Server',
@@ -299,7 +299,7 @@ export const mockComplexCanvas: ExtendedCanvas = {
       height: 80,
       text: 'Lock Manager',
       color: '#8b5cf6',
-      vv: {
+      pv: {
         nodeType: 'lock-manager',
         shape: 'rectangle',
         icon: 'Lock',
@@ -321,7 +321,7 @@ export const mockComplexCanvas: ExtendedCanvas = {
       height: 100,
       text: 'GitHub API',
       color: '#22c55e',
-      vv: {
+      pv: {
         nodeType: 'github-api',
         shape: 'hexagon',
         icon: 'Github',
@@ -337,7 +337,7 @@ export const mockComplexCanvas: ExtendedCanvas = {
       height: 100,
       text: 'Database',
       color: '#64748b',
-      vv: {
+      pv: {
         nodeType: 'database',
         shape: 'hexagon',
         icon: 'Database',
@@ -346,12 +346,12 @@ export const mockComplexCanvas: ExtendedCanvas = {
     },
   ],
   edges: [
-    { id: 'edge-handler-lock', fromNode: 'request-handler', toNode: 'lock-manager', vv: { edgeType: 'lock-request' } },
-    { id: 'edge-lock-github', fromNode: 'lock-manager', toNode: 'github-api', vv: { edgeType: 'api-call' } },
-    { id: 'edge-handler-github', fromNode: 'request-handler', toNode: 'github-api', vv: { edgeType: 'webhook-flow' } },
-    { id: 'edge-lock-db', fromNode: 'lock-manager', toNode: 'database', vv: { edgeType: 'db-query' } },
+    { id: 'edge-handler-lock', fromNode: 'request-handler', toNode: 'lock-manager', pv: { edgeType: 'lock-request' } },
+    { id: 'edge-lock-github', fromNode: 'lock-manager', toNode: 'github-api', pv: { edgeType: 'api-call' } },
+    { id: 'edge-handler-github', fromNode: 'request-handler', toNode: 'github-api', pv: { edgeType: 'webhook-flow' } },
+    { id: 'edge-lock-db', fromNode: 'lock-manager', toNode: 'database', pv: { edgeType: 'db-query' } },
   ],
-  vv: {
+  pv: {
     name: 'Repository Traffic Controller',
     version: '2.1.0',
     description: 'GitHub webhook processing with lock management',
@@ -386,7 +386,7 @@ export const mockComplexCanvas: ExtendedCanvas = {
 };
 
 /**
- * Mock canvas demonstrating vv.fill and vv.stroke color properties
+ * Mock canvas demonstrating pv.fill and pv.stroke color properties
  * This shows the new color system where each node can have distinct fill and stroke colors
  */
 export const mockNodeColorsCanvas: ExtendedCanvas = {
@@ -399,7 +399,7 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
       width: 180,
       height: 80,
       text: '@app/core',
-      vv: {
+      pv: {
         nodeType: 'package',
         shape: 'rectangle',
         fill: '#3b82f6',
@@ -415,7 +415,7 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
       width: 180,
       height: 80,
       text: '@app/api',
-      vv: {
+      pv: {
         nodeType: 'package',
         shape: 'rectangle',
         fill: '#8b5cf6',
@@ -431,7 +431,7 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
       width: 150,
       height: 80,
       text: 'Button',
-      vv: {
+      pv: {
         nodeType: 'component',
         shape: 'rectangle',
         fill: '#10b981',
@@ -447,7 +447,7 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
       width: 150,
       height: 80,
       text: 'useAuth',
-      vv: {
+      pv: {
         nodeType: 'hook',
         shape: 'circle',
         fill: '#06b6d4',
@@ -463,7 +463,7 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
       width: 150,
       height: 80,
       text: 'formatDate',
-      vv: {
+      pv: {
         nodeType: 'utility',
         shape: 'diamond',
         fill: '#f59e0b',
@@ -479,7 +479,7 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
       width: 150,
       height: 80,
       text: 'User',
-      vv: {
+      pv: {
         nodeType: 'type-def',
         shape: 'hexagon',
         fill: '#ec4899',
@@ -495,7 +495,7 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
       width: 150,
       height: 80,
       text: 'lodash',
-      vv: {
+      pv: {
         nodeType: 'external-dep',
         shape: 'rectangle',
         fill: '#6b7280',
@@ -505,17 +505,17 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
     },
   ],
   edges: [
-    { id: 'edge-core-api', fromNode: 'pkg-core', toNode: 'pkg-api', vv: { edgeType: 'dependency' } },
-    { id: 'edge-core-button', fromNode: 'pkg-core', toNode: 'component-button', vv: { edgeType: 'exports' } },
-    { id: 'edge-api-auth', fromNode: 'pkg-api', toNode: 'hook-auth', vv: { edgeType: 'exports' } },
-    { id: 'edge-api-format', fromNode: 'pkg-api', toNode: 'util-format', vv: { edgeType: 'exports' } },
-    { id: 'edge-auth-user', fromNode: 'hook-auth', toNode: 'type-user', vv: { edgeType: 'uses-type' } },
-    { id: 'edge-format-lodash', fromNode: 'util-format', toNode: 'ext-lodash', vv: { edgeType: 'imports' } },
+    { id: 'edge-core-api', fromNode: 'pkg-core', toNode: 'pkg-api', pv: { edgeType: 'dependency' } },
+    { id: 'edge-core-button', fromNode: 'pkg-core', toNode: 'component-button', pv: { edgeType: 'exports' } },
+    { id: 'edge-api-auth', fromNode: 'pkg-api', toNode: 'hook-auth', pv: { edgeType: 'exports' } },
+    { id: 'edge-api-format', fromNode: 'pkg-api', toNode: 'util-format', pv: { edgeType: 'exports' } },
+    { id: 'edge-auth-user', fromNode: 'hook-auth', toNode: 'type-user', pv: { edgeType: 'uses-type' } },
+    { id: 'edge-format-lodash', fromNode: 'util-format', toNode: 'ext-lodash', pv: { edgeType: 'imports' } },
   ],
-  vv: {
+  pv: {
     name: 'Code City - Node Colors Demo',
     version: '1.0.0',
-    description: 'Demonstrates vv.fill and vv.stroke color properties for different node types',
+    description: 'Demonstrates pv.fill and pv.stroke color properties for different node types',
     edgeTypes: {
       dependency: {
         style: 'solid',
@@ -547,21 +547,21 @@ export const mockNodeColorsCanvas: ExtendedCanvas = {
 
 /**
  * Mock canvas with mixed color sources for testing priority
- * Tests: vv.fill > node.color > default
+ * Tests: pv.fill > node.color > default
  * Each node uses a unique nodeType to ensure independent color testing
  */
 export const mockColorPriorityCanvas: ExtendedCanvas = {
   nodes: [
     {
-      id: 'node-vv-fill',
+      id: 'node-pv-fill',
       type: 'text',
       x: 100,
       y: 100,
       width: 180,
       height: 80,
-      text: 'vv.fill + vv.stroke',
-      color: '#ff0000', // This should be ignored because vv.fill is set
-      vv: {
+      text: 'pv.fill + pv.stroke',
+      color: '#ff0000', // This should be ignored because pv.fill is set
+      pv: {
         nodeType: 'service-with-fill',
         shape: 'rectangle',
         fill: '#3b82f6', // Blue - should be used
@@ -578,7 +578,7 @@ export const mockColorPriorityCanvas: ExtendedCanvas = {
       height: 80,
       text: 'node.color only',
       color: '#22c55e', // Green - should be used as fill
-      vv: {
+      pv: {
         nodeType: 'service-canvas-color',
         shape: 'rectangle',
         // No fill/stroke - uses node.color
@@ -594,7 +594,7 @@ export const mockColorPriorityCanvas: ExtendedCanvas = {
       height: 80,
       text: 'No color (gray)',
       // No color property - should show default gray #888
-      vv: {
+      pv: {
         nodeType: 'service-no-color',
         shape: 'rectangle',
         // No fill/stroke - uses default gray
@@ -608,8 +608,8 @@ export const mockColorPriorityCanvas: ExtendedCanvas = {
       y: 250,
       width: 180,
       height: 80,
-      text: 'vv.stroke only',
-      vv: {
+      text: 'pv.stroke only',
+      pv: {
         nodeType: 'database',
         shape: 'hexagon',
         // No fill - stroke will be used for both
@@ -625,7 +625,7 @@ export const mockColorPriorityCanvas: ExtendedCanvas = {
       width: 100,
       height: 100,
       text: 'Circle',
-      vv: {
+      pv: {
         nodeType: 'endpoint',
         shape: 'circle',
         fill: '#06b6d4',
@@ -641,7 +641,7 @@ export const mockColorPriorityCanvas: ExtendedCanvas = {
       width: 100,
       height: 100,
       text: 'Diamond',
-      vv: {
+      pv: {
         nodeType: 'decision',
         shape: 'diamond',
         fill: '#f59e0b',
@@ -651,16 +651,16 @@ export const mockColorPriorityCanvas: ExtendedCanvas = {
     },
   ],
   edges: [
-    { id: 'e1', fromNode: 'node-vv-fill', toNode: 'node-canvas-color', vv: { edgeType: 'flow' } },
-    { id: 'e2', fromNode: 'node-canvas-color', toNode: 'node-no-color', vv: { edgeType: 'flow' } },
-    { id: 'e3', fromNode: 'node-vv-fill', toNode: 'node-stroke-only', vv: { edgeType: 'flow' } },
-    { id: 'e4', fromNode: 'node-stroke-only', toNode: 'node-shapes-circle', vv: { edgeType: 'flow' } },
-    { id: 'e5', fromNode: 'node-shapes-circle', toNode: 'node-shapes-diamond', vv: { edgeType: 'flow' } },
+    { id: 'e1', fromNode: 'node-pv-fill', toNode: 'node-canvas-color', pv: { edgeType: 'flow' } },
+    { id: 'e2', fromNode: 'node-canvas-color', toNode: 'node-no-color', pv: { edgeType: 'flow' } },
+    { id: 'e3', fromNode: 'node-pv-fill', toNode: 'node-stroke-only', pv: { edgeType: 'flow' } },
+    { id: 'e4', fromNode: 'node-stroke-only', toNode: 'node-shapes-circle', pv: { edgeType: 'flow' } },
+    { id: 'e5', fromNode: 'node-shapes-circle', toNode: 'node-shapes-diamond', pv: { edgeType: 'flow' } },
   ],
-  vv: {
+  pv: {
     name: 'Color Priority Test',
     version: '1.0.0',
-    description: 'Tests color priority: vv.fill > node.color > default',
+    description: 'Tests color priority: pv.fill > node.color > default',
     edgeTypes: {
       flow: {
         style: 'solid',
@@ -679,42 +679,42 @@ export const mockControlTowerCanvasJSON = JSON.stringify(mockControlTowerCanvas,
 export const mockNodeColorsCanvasJSON = JSON.stringify(mockNodeColorsCanvas, null, 2);
 export const mockColorPriorityCanvasJSON = JSON.stringify(mockColorPriorityCanvas, null, 2);
 
-// Mock file tree with canvas files using .vgc/ folder structure
+// Mock file tree with canvas files using .principal-views/ folder structure
 export const createMockFileTree = (config: 'simple' | 'complex' | 'control-tower' | 'node-colors' | 'color-priority' | 'none') => {
   const files: Array<{ path: string; relativePath: string; name: string; content?: string }> = [];
 
   if (config === 'simple') {
     files.push({
-      path: '.vgc/simple-service.canvas',
-      relativePath: '.vgc/simple-service.canvas',
+      path: '.principal-views/simple-service.canvas',
+      relativePath: '.principal-views/simple-service.canvas',
       name: 'simple-service.canvas',
       content: mockSimpleCanvasJSON,
     });
   } else if (config === 'complex') {
     files.push({
-      path: '.vgc/traffic-controller.canvas',
-      relativePath: '.vgc/traffic-controller.canvas',
+      path: '.principal-views/traffic-controller.canvas',
+      relativePath: '.principal-views/traffic-controller.canvas',
       name: 'traffic-controller.canvas',
       content: mockComplexCanvasJSON,
     });
   } else if (config === 'control-tower') {
     files.push({
-      path: '.vgc/control-tower.canvas',
-      relativePath: '.vgc/control-tower.canvas',
+      path: '.principal-views/control-tower.canvas',
+      relativePath: '.principal-views/control-tower.canvas',
       name: 'control-tower.canvas',
       content: mockControlTowerCanvasJSON,
     });
   } else if (config === 'node-colors') {
     files.push({
-      path: '.vgc/node-colors.canvas',
-      relativePath: '.vgc/node-colors.canvas',
+      path: '.principal-views/node-colors.canvas',
+      relativePath: '.principal-views/node-colors.canvas',
       name: 'node-colors.canvas',
       content: mockNodeColorsCanvasJSON,
     });
   } else if (config === 'color-priority') {
     files.push({
-      path: '.vgc/color-priority.canvas',
-      relativePath: '.vgc/color-priority.canvas',
+      path: '.principal-views/color-priority.canvas',
+      relativePath: '.principal-views/color-priority.canvas',
       name: 'color-priority.canvas',
       content: mockColorPriorityCanvasJSON,
     });

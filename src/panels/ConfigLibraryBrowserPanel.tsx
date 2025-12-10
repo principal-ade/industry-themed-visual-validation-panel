@@ -7,7 +7,7 @@ import {
   type ComponentLibrary,
   type LibraryNodeComponent,
   type LibraryEdgeComponent,
-} from '@principal-ai/visual-validation-core';
+} from '@principal-ai/principal-view-core';
 import {
   FileJson,
   Library,
@@ -143,10 +143,10 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
         basePath: repositoryPath,
       });
 
-      // Find .canvas files in .vgc/ folder
+      // Find .canvas files in .principal-views/ folder
       const vgcFiles = fileTreeData.allFiles.filter(f => {
         const path = f.relativePath || f.path || '';
-        return path.startsWith('.vgc/');
+        return path.startsWith('.principal-views/');
       });
 
       // Load all file contents into the adapter cache
@@ -200,7 +200,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
           canvasConfigs.push({
             id: name,
             name,
-            path: `.vgc/${name}.yaml`,
+            path: `.principal-views/${name}.yaml`,
             displayName,
           });
         }
@@ -288,11 +288,11 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
   // CLI command changes based on whether user has configs
   const hasConfigs = state.configs.length > 0;
   const cliCommand = hasConfigs
-    ? 'npx @principal-ai/visual-validation-cli --help'
-    : 'npx @principal-ai/visual-validation-cli init';
+    ? 'npx @principal-ai/principal-view-cli --help'
+    : 'npx @principal-ai/principal-view-cli init';
   const cliCommandDescription = hasConfigs
     ? 'View all available CLI commands and options.'
-    : 'This creates a .vgc/ folder with a starter canvas file.';
+    : 'This creates a .principal-views/ folder with a starter canvas file.';
 
   // Handle copy command for empty state
   const handleCopyCommand = useCallback(() => {
@@ -323,7 +323,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
     const acts = actionsRef.current as { notifyPanels?: (event: unknown) => void };
     if (acts.notifyPanels) {
       acts.notifyPanels({
-        type: 'vv:config:selected',
+        type: 'pv:config:selected',
         configId: config.id,
         configPath: config.path,
         configName: config.displayName,
@@ -545,7 +545,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
   const hasContent = state.configs.length > 0 || state.library;
 
   if (!hasContent) {
-    const npmPackageUrl = 'https://www.npmjs.com/package/@principal-ai/visual-validation-cli';
+    const npmPackageUrl = 'https://www.npmjs.com/package/@principal-ai/principal-view-cli';
 
     return (
       <div style={{
@@ -565,7 +565,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
           No configurations found
         </span>
         <span style={{ fontSize: theme.fontSizes[2], marginBottom: theme.space[3], maxWidth: '80%', lineHeight: 1.5 }}>
-          Initialize Visual Validation to create architecture diagrams that connect to your codebase.
+          Initialize Principal View to create architecture diagrams that connect to your codebase.
         </span>
 
         {/* Copy command section */}
@@ -1001,7 +1001,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
             <Library size={32} style={{ marginBottom: theme.space[2], opacity: 0.5 }} />
             <div>No component library found</div>
             <div style={{ fontSize: theme.fontSizes[0], marginTop: theme.space[1] }}>
-              Add library.yaml to the .vgc/ folder
+              Add library.yaml to the .principal-views/ folder
             </div>
           </div>
         )}
@@ -1123,7 +1123,7 @@ export const ConfigLibraryBrowserPanel: React.FC<PanelComponentProps> = ({
 
               {/* Learn more link */}
               <a
-                href="https://www.npmjs.com/package/@principal-ai/visual-validation-cli"
+                href="https://www.npmjs.com/package/@principal-ai/principal-view-cli"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{

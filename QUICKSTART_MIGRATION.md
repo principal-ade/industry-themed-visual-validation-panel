@@ -1,6 +1,6 @@
 # Quick Start: Migrate to v0.4.0
 
-**TL;DR:** Update packages, adopt `.vgc/` folder, use framework's ConfigurationLoader & ConfigurationSelector.
+**TL;DR:** Update packages, adopt `.principal-views/` folder, use framework's ConfigurationLoader & ConfigurationSelector.
 
 ---
 
@@ -10,8 +10,8 @@
 
 ```bash
 # Update package.json
-npm install @principal-ai/visual-validation-core@0.4.0 \
-            @principal-ai/visual-validation-react@0.4.0 \
+npm install @principal-ai/principal-view-core@latest \
+            @principal-ai/principal-view-react@latest \
             @principal-ai/repository-abstraction@0.2.5
 
 # Remove js-yaml (now included)
@@ -20,7 +20,7 @@ npm uninstall js-yaml
 
 ### 2. Migration Strategy
 
-This migration only supports `.vgc/` folder for simpler implementation and full framework consistency. Users must migrate their configs.
+This migration only supports `.principal-views/` folder for simpler implementation and full framework consistency. Users must migrate their configs.
 
 ---
 
@@ -35,7 +35,7 @@ import {
   ConfigurationLoader,
   InMemoryFileSystemAdapter,
   type ConfigurationFile
-} from '@principal-ai/visual-validation-core';
+} from '@principal-ai/principal-view-core';
 
 export class ConfigManager {
   static createAdapter(fileTree: any[]) {
@@ -80,7 +80,7 @@ export class ConfigManager {
 import {
   GraphRenderer,
   ConfigurationSelector
-} from '@principal-ai/visual-validation-react';
+} from '@principal-ai/principal-view-react';
 ```
 
 2. **Replace custom selector with:**
@@ -103,7 +103,7 @@ const configs = ConfigManager.findConfigs(fileTreeData.allFiles);
 
 **In EmptyStateContent.tsx:**
 
-Change message to reference `.vgc/` folder instead of `vvf.config.yaml`.
+Change message to reference `.principal-views/` folder instead of `vvf.config.yaml`.
 
 ---
 
@@ -117,10 +117,10 @@ bun run build
 bun run storybook
 ```
 
-**Test with `.vgc/` folder:**
+**Test with `.principal-views/` folder:**
 ```
 your-project/
-  .vgc/
+  .principal-views/
     architecture.yaml
     data-flow.yaml
 ```
@@ -134,19 +134,19 @@ Add to your README:
 ```markdown
 ## Configuration Migration
 
-Visual Validation Panel now uses the `.vgc/` folder for configurations.
+Visual Validation Panel now uses the `.principal-views/` folder for configurations.
 
 ### Migrate from single config:
 ```bash
-mkdir .vgc
-mv vvf.config.yaml .vgc/main.yaml
+mkdir .principal-views
+mv vvf.config.yaml .principal-views/main.yaml
 ```
 
 ### Migrate from old config folder:
 ```bash
-mkdir .vgc
-mv visual-validation-configs/*.vvf.yaml .vgc/
-cd .vgc
+mkdir .principal-views
+mv principal-view-configs/*.vvf.yaml .principal-views/
+cd .principal-views
 for f in *.vvf.yaml; do mv "$f" "${f%.vvf.yaml}.yaml"; done
 ```
 
@@ -158,7 +158,7 @@ See [MIGRATION_TO_V0.4.0.md](./MIGRATION_TO_V0.4.0.md) for complete guide.
 
 ## Example Configs
 
-See framework's [`.vgc/` folder](../../visual-validation-core-library/.vgc/) for examples:
+See framework's [`.principal-views/` folder](../../principal-view-core-library/.principal-views/) for examples:
 - simple-service.yaml
 - microservices.yaml
 - data-pipeline.yaml

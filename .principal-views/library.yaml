@@ -1,5 +1,5 @@
 version: "1.0.0"
-name: "Visual Validation Panel Library"
+name: "Principal View Panel Library"
 
 nodeComponents:
   # Core Panel Components

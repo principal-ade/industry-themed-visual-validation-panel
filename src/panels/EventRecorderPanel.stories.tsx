@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useState, useCallback } from 'react';
 import { EventRecorderPanel } from './EventRecorderPanel';
 import { ThemeProvider } from '@principal-ade/industry-theme';
-import type { EventSession, GraphEvent } from '@principal-ai/visual-validation-core';
+import type { EventSession, GraphEvent } from '@principal-ai/principal-view-core';
 
 const meta: Meta<typeof EventRecorderPanel> = {
   title: 'Panels/EventRecorderPanel',

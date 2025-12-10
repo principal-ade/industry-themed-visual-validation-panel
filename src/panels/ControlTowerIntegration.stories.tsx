@@ -5,16 +5,16 @@ import { EventControllerPanel } from './EventControllerPanel';
 import { ThemeProvider } from '@principal-ade/industry-theme';
 import {
   EventRecorderService,
-} from '@principal-ai/visual-validation-core';
+} from '@principal-ai/principal-view-core';
 import type {
   EventSession,
   GraphEvent,
   PathBasedGraphConfiguration,
-} from '@principal-ai/visual-validation-core';
+} from '@principal-ai/principal-view-core';
 
 /**
  * Real Control Tower Core VGC Configuration
- * From: /Users/griever/Developer/messaging-server/control-tower-core/.vgc/vvf.config.yaml
+ * From: /Users/griever/Developer/messaging-server/control-tower-core/.principal-views/vvf.config.yaml
  */
 const controlTowerConfig: PathBasedGraphConfiguration = {
   metadata: {

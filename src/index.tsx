@@ -1,8 +1,8 @@
-import { VisualValidationGraphPanel } from './panels/VisualValidationGraphPanel';
+import { PrincipalViewGraphPanel } from './panels/PrincipalViewGraphPanel';
 import { ConfigLibraryBrowserPanel } from './panels/ConfigLibraryBrowserPanel';
 import { EventControllerPanel } from './panels/EventControllerPanel';
 import type { PanelDefinition, PanelContextValue } from './types';
-import { visualValidationPanelTools, visualValidationPanelToolsMetadata } from './tools';
+import { principalViewPanelTools, principalViewPanelToolsMetadata } from './tools';
 
 // Re-export components for direct usage
 export { EventControllerPanel } from './panels/EventControllerPanel';
@@ -22,23 +22,23 @@ export type { FileTreeEntry, PanelFileSystemAdapterOptions } from './adapters/Pa
 export const panels: PanelDefinition[] = [
   {
     metadata: {
-      id: 'principal-ai.visual-validation-graph',
-      name: 'Visual Validation Graph',
+      id: 'principal-ai.principal-view-graph',
+      name: 'Principal View Graph',
       icon: '🕸️',
-      version: '0.1.1',
+      version: '0.1.0',
       author: 'Principal AI',
       description: 'Visualizes .canvas configuration files as interactive graph diagrams',
       slices: ['fileTree'], // Data slices this panel depends on
       // UTCP-compatible tools this panel exposes
-      tools: visualValidationPanelTools,
+      tools: principalViewPanelTools,
     },
-    component: VisualValidationGraphPanel,
+    component: PrincipalViewGraphPanel,
 
     // Optional: Called when this specific panel is mounted
     onMount: async (context: PanelContextValue) => {
       // eslint-disable-next-line no-console
       console.log(
-        'Visual Validation Graph Panel mounted',
+        'Principal View Graph Panel mounted',
         context.currentScope.repository?.path
       );
 
@@ -51,7 +51,7 @@ export const panels: PanelDefinition[] = [
     // Optional: Called when this specific panel is unmounted
     onUnmount: async (_context: PanelContextValue) => {
       // eslint-disable-next-line no-console
-      console.log('Visual Validation Graph Panel unmounting');
+      console.log('Principal View Graph Panel unmounting');
     },
   },
   {
@@ -94,7 +94,7 @@ export const panels: PanelDefinition[] = [
  */
 export const onPackageLoad = async () => {
   // eslint-disable-next-line no-console
-  console.log('Panel package loaded - Visual Validation Graph Panel');
+  console.log('Panel package loaded - Principal View Graph Panel');
 };
 
 /**
@@ -103,16 +103,16 @@ export const onPackageLoad = async () => {
  */
 export const onPackageUnload = async () => {
   // eslint-disable-next-line no-console
-  console.log('Panel package unloading - Visual Validation Graph Panel');
+  console.log('Panel package unloading - Principal View Graph Panel');
 };
 
 /**
  * Export tools for server-safe imports.
- * Use '@industry-theme/visual-validation-panel/tools' to import without React dependencies.
+ * Use '@industry-theme/principal-view-panels/tools' to import without React dependencies.
  */
 export {
-  visualValidationPanelTools,
-  visualValidationPanelToolsMetadata,
+  principalViewPanelTools,
+  principalViewPanelToolsMetadata,
   focusNodeTool,
   resetViewTool,
   triggerEventTool,

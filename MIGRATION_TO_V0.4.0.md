@@ -1,11 +1,11 @@
-# Migration Guide: Visual Validation Panel → v0.4.0
+# Migration Guide: Principal View Panel → v0.4.0
 
-This guide explains how to migrate the `industry-themed-visual-validation-panel` to use the new multi-config support from Visual Validation Framework v0.4.0.
+This guide explains how to migrate the `industry-themed-principal-view-panels` to use the new multi-config support from Principal View Framework v0.4.0.
 
 ## Overview of Changes
 
-Visual Validation Framework v0.4.0 introduces **official multi-config support** with:
-- **`.vgc/` folder** - Standard location for multiple configurations
+Principal View Framework v0.4.0 introduces **official multi-config support** with:
+- **`.principal-views/` folder** - Standard location for multiple configurations
 - **`ConfigurationLoader`** - Official loader with FileSystemAdapter pattern
 - **`ConfigurationSelector`** - Ready-to-use React component for config switching
 - **`YamlParser`** - Built-in YAML parsing with validation
@@ -18,16 +18,16 @@ Your panel already has **custom multi-config support** - this migration will ado
 
 **Package Versions:**
 ```json
-"@principal-ai/visual-validation-core": "^0.2.1"
-"@principal-ai/visual-validation-react": "^0.2.2"
+"@principal-ai/principal-view-core": "^0.2.1"
+"@principal-ai/principal-view-react": "^0.2.2"
 ```
 
 **Config Locations Supported:**
 - Standalone: `vvf.config.yaml` at root
-- Config folders: `visual-validation-configs/`, `vvf-configs/`, `.vvf/` with `.vvf.yaml` files
+- Config folders: `principal-view-configs/`, `vvf-configs/`, `.vvf/` with `.vvf.yaml` files
 
 **Custom Code:**
-- `src/panels/visual-validation/ConfigLoader.ts` - Custom config finder and YAML parser
+- `src/panels/principal-view/ConfigLoader.ts` - Custom config finder and YAML parser
 - Panel component has inline config selector logic
 
 ---
@@ -40,10 +40,10 @@ Your panel already has **custom multi-config support** - this migration will ado
 
 ```diff
   "dependencies": {
--   "@principal-ai/visual-validation-core": "^0.2.1",
--   "@principal-ai/visual-validation-react": "^0.2.2",
-+   "@principal-ai/visual-validation-core": "^0.4.0",
-+   "@principal-ai/visual-validation-react": "^0.4.0",
+-   "@principal-ai/principal-view-core": "^0.2.1",
+-   "@principal-ai/principal-view-react": "^0.2.2",
++   "@principal-ai/principal-view-core": "^0.4.0",
++   "@principal-ai/principal-view-react": "^0.4.0",
 +   "@principal-ai/repository-abstraction": "^0.2.5",
     "@principal-ade/industry-theme": "^0.1.2",
     "@principal-ade/panel-framework-core": "^0.1.2",
@@ -66,24 +66,24 @@ bun install
 
 ---
 
-### Step 2: Adopt `.vgc/` Folder Structure
+### Step 2: Adopt `.principal-views/` Folder Structure
 
-The framework now uses `.vgc/` as the **standard** configuration folder.
+The framework now uses `.principal-views/` as the **standard** configuration folder.
 
-The framework now standardizes on `.vgc/` folder only. Users must migrate their configs to this location.
+The framework now standardizes on `.principal-views/` folder only. Users must migrate their configs to this location.
 
 ---
 
 ### Step 3: Update ConfigLoader to Use Framework Utilities
 
-**Current:** `src/panels/visual-validation/ConfigLoader.ts`
+**Current:** `src/panels/principal-view/ConfigLoader.ts`
 
 Replace with a new implementation that uses the framework's official loader:
 
 ```typescript
-// src/panels/visual-validation/ConfigManager.ts
-import { ConfigurationLoader, InMemoryFileSystemAdapter } from '@principal-ai/visual-validation-core';
-import type { ConfigurationFile } from '@principal-ai/visual-validation-core';
+// src/panels/principal-view/ConfigManager.ts
+import { ConfigurationLoader, InMemoryFileSystemAdapter } from '@principal-ai/principal-view-core';
+import type { ConfigurationFile } from '@principal-ai/principal-view-core';
 
 export interface PanelConfigFile {
   id: string;
@@ -131,7 +131,7 @@ export class ConfigManager {
   ): Promise<PanelConfigFile[]> {
     const configs: PanelConfigFile[] = [];
 
-    // 1. Check for .vgc/ folder using framework's ConfigurationLoader
+    // 1. Check for .principal-views/ folder using framework's ConfigurationLoader
     const fsAdapter = this.createFileSystemAdapter(fileTree);
     const loader = new ConfigurationLoader(fsAdapter);
 
@@ -157,7 +157,7 @@ export class ConfigManager {
 
 ### Step 4: Update Panel Component
 
-**File:** `src/panels/VisualValidationGraphPanel.tsx`
+**File:** `src/panels/PrincipalViewGraphPanel.tsx`
 
 **Changes:**
 
@@ -167,11 +167,11 @@ export class ConfigManager {
 import {
   GraphRenderer,
   ConfigurationSelector  // NEW
-} from '@principal-ai/visual-validation-react';
+} from '@principal-ai/principal-view-react';
 import {
   ConfigurationLoader,   // NEW
   type ConfigurationFile // NEW
-} from '@principal-ai/visual-validation-core';
+} from '@principal-ai/principal-view-core';
 ```
 
 2. **Update state type:**
@@ -213,7 +213,7 @@ const loadConfiguration = useCallback(async (configName?: string) => {
     const loader = new ConfigurationLoader(fsAdapter);
 
     if (!loader.hasConfigDirectory('/')) {
-      // No .vgc/ folder - show empty state or check legacy locations
+      // No .principal-views/ folder - show empty state or check legacy locations
       setState({...});
       return;
     }
@@ -304,9 +304,9 @@ const loadConfiguration = useCallback(async (configName?: string) => {
 
 ### Step 5: Update EmptyStateContent
 
-**File:** `src/panels/visual-validation/EmptyStateContent.tsx`
+**File:** `src/panels/principal-view/EmptyStateContent.tsx`
 
-Update the empty state message to reference `.vgc/` folder:
+Update the empty state message to reference `.principal-views/` folder:
 
 ```typescript
 <div style={{ textAlign: 'center', maxWidth: '500px' }}>
@@ -333,7 +333,7 @@ Update the empty state message to reference `.vgc/` folder:
       padding: '2px 6px',
       borderRadius: theme.radii[0],
       fontFamily: theme.fonts.mono
-    }}>.vgc/</code> folder in your project root and add YAML configuration files.
+    }}>.principal-views/</code> folder in your project root and add YAML configuration files.
   </p>
 
   <p style={{
@@ -348,7 +348,7 @@ Update the empty state message to reference `.vgc/` folder:
       borderRadius: theme.radii[0],
       fontFamily: theme.fonts.mono,
       fontSize: theme.fontSizes[0]
-    }}>.vgc/architecture.yaml</code>
+    }}>.principal-views/architecture.yaml</code>
   </p>
 </div>
 ```
@@ -360,8 +360,8 @@ Update the empty state message to reference `.vgc/` folder:
 **File:** `package.json`
 
 ```diff
-- "description": "Visual Validation Graph Panel for visualizing vvf.config.yaml files as interactive diagrams",
-+ "description": "Visual Validation Graph Panel for visualizing graph configurations from .vgc/ folder as interactive diagrams",
+- "description": "Principal View Graph Panel for visualizing vvf.config.yaml files as interactive diagrams",
++ "description": "Principal View Graph Panel for visualizing graph configurations from .principal-views/ folder as interactive diagrams",
 ```
 
 ---
@@ -370,10 +370,10 @@ Update the empty state message to reference `.vgc/` folder:
 
 **Test scenarios:**
 
-1. **`.vgc/` folder with multiple configs**
+1. **`.principal-views/` folder with multiple configs**
    ```
    your-project/
-     .vgc/
+     .principal-views/
        architecture.yaml
        data-flow.yaml
        deployment.yaml
@@ -382,10 +382,10 @@ Update the empty state message to reference `.vgc/` folder:
    - Verify ConfigurationSelector appears
    - Verify switching between configs works
 
-2. **`.vgc/` folder with single config**
+2. **`.principal-views/` folder with single config**
    ```
    your-project/
-     .vgc/
+     .principal-views/
        main.yaml
    ```
    - Verify config loads
@@ -412,7 +412,7 @@ Update the empty state message to reference `.vgc/` folder:
 - ✅ Use framework's official ConfigurationLoader
 - ✅ Built-in YAML parsing with error handling
 - ✅ Built-in validation
-- ✅ Standard `.vgc/` folder location
+- ✅ Standard `.principal-views/` folder location
 - ✅ Ready-to-use ConfigurationSelector component
 - ✅ FileSystemAdapter pattern for testing
 - ✅ Consistent with other projects using the framework
@@ -424,16 +424,16 @@ Update the empty state message to reference `.vgc/` folder:
 Users must migrate their configs:
 
 ```bash
-# Create .vgc folder
-mkdir .vgc
+# Create .principal-views folder
+mkdir .principal-views
 
 # Move single config
-mv vvf.config.yaml .vgc/main.yaml
+mv vvf.config.yaml .principal-views/main.yaml
 
 # Or move multiple configs from old folder
-mv visual-validation-configs/*.vvf.yaml .vgc/
+mv principal-view-configs/*.vvf.yaml .principal-views/
 # Rename .vvf.yaml → .yaml
-cd .vgc
+cd .principal-views
 for f in *.vvf.yaml; do mv "$f" "${f%.vvf.yaml}.yaml"; done
 ```
 
@@ -444,7 +444,7 @@ for f in *.vvf.yaml; do mv "$f" "${f%.vvf.yaml}.yaml"; done
 ## Rollout Strategy
 
 1. Update to v0.4.0 packages
-2. Only support `.vgc/` folder location
+2. Only support `.principal-views/` folder location
 3. Simpler codebase
 4. Full framework consistency
 
@@ -455,12 +455,12 @@ for f in *.vvf.yaml; do mv "$f" "${f%.vvf.yaml}.yaml"; done
 - [ ] Update package.json dependencies to v0.4.0
 - [ ] Run `bun install`
 - [ ] Update ConfigLoader or create new ConfigManager
-- [ ] Add `.vgc/` folder support
-- [ ] Update VisualValidationGraphPanel component
+- [ ] Add `.principal-views/` folder support
+- [ ] Update PrincipalViewGraphPanel component
 - [ ] Replace inline selector with ConfigurationSelector
 - [ ] Update EmptyStateContent message
 - [ ] Add migration guide to README
-- [ ] Test with `.vgc/` folder
+- [ ] Test with `.principal-views/` folder
 - [ ] Update Storybook stories
 - [ ] Build and verify no TypeScript errors
 - [ ] Update version number
@@ -469,11 +469,11 @@ for f in *.vvf.yaml; do mv "$f" "${f%.vvf.yaml}.yaml"; done
 
 ## Additional Resources
 
-- [Visual Validation Framework v0.4.0 Release Notes](../../visual-validation-core-library/README.md)
-- [.vgc/ Folder Guide](../../visual-validation-core-library/.vgc/README.md)
-- [Configuration Reference](../../visual-validation-core-library/docs/CONFIGURATION_REFERENCE.md)
-- [ConfigurationLoader API](../../visual-validation-core-library/packages/core/src/ConfigurationLoader.ts)
-- [ConfigurationSelector Component](../../visual-validation-core-library/packages/react/src/components/ConfigurationSelector.tsx)
+- [Principal View Framework v0.4.0 Release Notes](../../principal-view-core-library/README.md)
+- [.principal-views/ Folder Guide](../../principal-view-core-library/.principal-views/README.md)
+- [Configuration Reference](../../principal-view-core-library/docs/CONFIGURATION_REFERENCE.md)
+- [ConfigurationLoader API](../../principal-view-core-library/packages/core/src/ConfigurationLoader.ts)
+- [ConfigurationSelector Component](../../principal-view-core-library/packages/react/src/components/ConfigurationSelector.tsx)
 
 ---
 
@@ -481,8 +481,8 @@ for f in *.vvf.yaml; do mv "$f" "${f%.vvf.yaml}.yaml"; done
 
 If you encounter any issues during migration, check:
 1. Package versions are correct (all v0.4.0)
-2. `.vgc/` folder exists and contains valid YAML files
+2. `.principal-views/` folder exists and contains valid YAML files
 3. YAML files have required fields (metadata, nodeTypes, edgeTypes, allowedConnections)
 4. FileSystemAdapter is correctly populated with file tree data
 
-For additional help, refer to the framework's example configurations in `.vgc/` folder.
+For additional help, refer to the framework's example configurations in `.principal-views/` folder.
